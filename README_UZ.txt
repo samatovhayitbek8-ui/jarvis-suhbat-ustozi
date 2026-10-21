@@ -1,24 +1,19 @@
-JARVIS - ERKIN AI SUHBAT (mobil va kompyuter)
+JARVIS — OVOZLI IMTIHON BOSHQARUVI
 
-Yangi imkoniyatlar:
-- Erkin suhbat: istalgan mavzuda Gemini AI bilan gaplashish.
-- Ovozli rejim: bir marta ishga tushirilgach, JARVIS tinglaydi, javobni AI ga yuboradi, javobni ovoz chiqarib o'qiydi va yana tinglaydi.
-- Matn bilan ham yuborish mumkin. Enter - yuborish, Shift+Enter - yangi qator.
-- Oldingi suhbatning so'nggi xabarlari kontekst sifatida saqlanadi (sahifa ochiq turgan vaqt davomida).
-- Avvalgi 240 ta suhbat savoli va imtihon rejimi saqlanadi.
+Yangilanish:
+- Imtihon javobidan keyin 5 soniya sukut kutadi.
+- Mikrofonni bir marta yoqqandan keyin imtihon buyruqlarini ovoz bilan boshqarish mumkin.
+- "Savol-javobni boshla" — imtihonni boshlaydi.
+- "Qaytar" — hozirgi savolni qayta o'qiydi.
+- "Keyingisi" — keyingi savolga o'tadi va joriy savolni baholamaydi.
+- "To'xta" — ovozli imtihonni to'xtatadi.
+- Javob Gemini AI orqali savol va PDFdagi namunaviy javobga qarab tekshiriladi. Agar AI vaqtincha ishlamasa, dastur baho taxminiy ekanini aytadi.
+- O'zbek lotin va kirill yozuvidagi ovozli buyruqlarni tanishga urinadi.
 
-Render sozlamalari:
-- GEMINI_API_KEY environment variable bo'lishi kerak.
-- GEMINI_MODEL ixtiyoriy; standart model gemini-3.8-flash.
-- Kalitni HTML yoki GitHub fayliga yozmang.
+Ishga tushirish / deploy:
+1. ZIP ichidagi Update_JARVIS_Voice_Control.ps1 faylini ishga tushiring.
+2. Skript kompyuterdagi mavjud GitHub loyihasini zaxiralaydi va main branchga yangilanishni yuboradi.
+3. Render deploy holati Live bo'lishini kuting.
+4. Saytni qayta yuklang. Brauzer xavfsizligi sabab mikrofon uchun Ovozli imtihonni yoqish tugmasini birinchi marta bosish kerak; keyin buyruqlarni ovoz bilan ayting.
 
-Ishga tushirish:
-1. ZIP ichidagi Update_JARVIS_Erkin_Suhbat.ps1 faylini .ps1 sifatida ishga tushiring.
-2. Skript mavjud Desktop\JARVIS_Mobile_Web_GitHub loyihasining zaxira nusxasini yaratadi, yangilangan fayllarni joylaydi va GitHub main branch'iga yuboradi.
-3. Render yangi commitni deploy qilgach, https://jarvis-suhbat-ustozi.onrender.com saytini qayta oching.
-4. Sahifadagi "JARVIS bilan erkin suhbat" qismida "Jonli suhbatni boshlash" ni bosing va Chrome mikrofon ruxsatini bering.
-
-Eslatma:
-- Ovozli nutqni tanish Chrome/Android brauzerining imkoniyatlariga va tarmoq mavjudligiga bog'liq.
-- Ovoz javoblari serverdagi edge-tts orqali tayyorlanadi; xizmat ishlamasa, brauzer ovoziga o'tishi mumkin.
-- Gemini API bepul tarifida limit bo'lishi mumkin.
+Buyruqlar faqat jonli imtihon rejimida ishlaydi. Mikrofon va nutqni tanish brauzerga bog'liq. AI baholashi uchun Render Environment'da GEMINI_API_KEY maxfiy o'zgaruvchisi bo'lishi kerak.
