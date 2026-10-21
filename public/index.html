@@ -729,7 +729,7 @@ items=embeddedBank.map(x=>({q:x.q,a:x.a}));
 $('fileStatus').textContent='PDFdagi 240 ta savol-javob dastur ichiga kiritilgan. Faylni qayta yuklash shart emas.';
 $('parseStatus').textContent='240 ta savol tayyor.';
 renderStats();
-fetch('/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(h=>{if(!$('aiStatus'))return;$('aiStatus').textContent=h&&h.ai_enabled?'AI baholashi faol.':'Oddiy baholash faol. AI ulash uchun Render’da OPENAI_API_KEY sozlang.'}).catch(()=>{});
+fetch('/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(h=>{if(!$('aiStatus'))return;$('aiStatus').textContent=h&&h.ai_enabled?('AI baholashi faol ('+(h.ai_provider||'AI')+').'):'Oddiy baholash faol. AI ulash uchun Render Environment’da GEMINI_API_KEY sozlang.'}).catch(()=>{});
 })();
 </script>
 <script>
