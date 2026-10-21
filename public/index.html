@@ -145,6 +145,16 @@ body.live-active label[for="userAnswer"],body.live-active #userAnswer{display:no
 #modelAnswer{font-size:14px;max-height:120px;overflow:auto}
 #feedback{font-weight:700}
 @media(max-width:620px){main{padding:10px 8px 22px;gap:8px}.card{padding:11px}.holo-stage{padding:8px}.avatar-copy p{margin-bottom:7px}.conversation-log{max-height:27vh!important}.qbox{padding:12px;margin:8px 0}.question{font-size:19px}.live-hint{font-size:12px}.voice-note{font-size:12px;padding:8px}}
+
+/* Free-flow, multi-turn AI conversation */
+.free-chat-card{grid-column:1/-1;border-color:#236176;background:linear-gradient(145deg,#0c2434,#081724)}
+.free-chat-log{max-height:38vh;min-height:95px;margin:10px 0 12px}
+#freeChatInput{min-height:74px;max-height:180px;background:#071522!important}
+.free-chat-controls{margin-top:10px}
+#freeChatStart.active{background:linear-gradient(135deg,#35dfa7,#078c9b);color:#03151b}
+#freeChatStatus{overflow-wrap:anywhere}
+@media(max-width:620px){.free-chat-log{max-height:33vh}.free-chat-controls>button{flex-basis:100%;width:100%}.free-chat-card{padding:12px}}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
@@ -204,7 +214,25 @@ body.live-active label[for="userAnswer"],body.live-active #userAnswer{display:no
       <path d="M18 320 L48 320 M212 320 L242 320" stroke="#55eaff" stroke-width="1.3" opacity=".55"/>
     </svg>
   </div>
-  <div class="avatar-copy"><div class="avatar-label">HOLOGRAPHIC INTERFACE · AI ASSISTANT</div><h2>J.A.R.V.I.S.</h2><p>Salom. Savol beraman, seni tinglayman va javobingni qisqa tekshiraman.</p><div class="avatar-live"><i></i><span id="avatarStatusText">TIZIM TAYYOR · SIZNI KUTYAPMAN</span></div></div>
+  <div class="avatar-copy"><div class="avatar-label">HOLOGRAPHIC INTERFACE · AI ASSISTANT</div><h2>J.A.R.V.I.S.</h2><p>Tabiiy suhbat, ovozli yordam va imtihonga tayyorgarlik.</p><div class="avatar-live"><i></i><span id="avatarStatusText">TIZIM TAYYOR · SIZNI KUTYAPMAN</span></div></div>
+</section>
+
+
+<section id="freeChatCard" class="card wide free-chat-card">
+  <h2>💬 JARVIS bilan erkin suhbat</h2>
+  <p class="muted">Bu imtihon emas. Istalgan mavzuda yozing yoki ovozli suhbatni boshlang. JARVIS oldingi gaplaringizni eslab, tabiiy javob berishga harakat qiladi.</p>
+  <div id="freeChatLog" class="conversation-log free-chat-log" aria-live="polite">
+    <div class="chat-msg jarvis"><span class="chat-who">J.A.R.V.I.S.</span>Salom! Men JARVISman. Nima haqida gaplashamiz?</div>
+  </div>
+  <label for="freeChatInput" class="muted">Xabar</label>
+  <textarea id="freeChatInput" rows="2" placeholder="Masalan: Bugun kayfiyatim uncha yaxshi emas..." autocomplete="off"></textarea>
+  <div class="row free-chat-controls">
+    <button id="freeChatStart">🗣️ Jonli suhbatni boshlash</button>
+    <button id="freeChatSend" class="secondary">Yuborish</button>
+    <button id="freeChatMic" class="secondary">🎤 Gapirib yuborish</button>
+    <button id="freeChatStop" class="ghost">Suhbatni to‘xtatish</button>
+  </div>
+  <div id="freeChatStatus" class="voice-note" aria-live="polite">Gemini AI tayyorligini tekshiryapman…</div>
 </section>
 
 <section id="importPanel" class="card wide">
@@ -452,7 +480,7 @@ function browserSpeakText(text, afterSpeak=null){
  if(v){u.voice=v;u.lang=v.lang||$('lang').value}else u.lang=$('lang').value;
  u.rate=.91;u.pitch=1.0;u.volume=1;
  u.onstart=()=>{setAvatarState('talking');$('voiceStatus').textContent='Brauzer ovozi: '+(v?(v.name+' · '+v.lang):u.lang)};
- u.onend=()=>{if(!listening)setAvatarState('idle');$('voiceStatus').textContent=v?'Brauzer ovozi: '+v.name+' ('+v.lang+').':'Brauzer ovozi tugadi.';if(typeof afterSpeak==='function'&&conversationMode)afterSpeak()};
+ u.onend=()=>{if(!listening)setAvatarState('idle');$('voiceStatus').textContent=v?'Brauzer ovozi: '+v.name+' ('+v.lang+').':'Brauzer ovozi tugadi.';if(typeof afterSpeak==='function'&&(conversationMode||freeChatActive))afterSpeak()};
  u.onerror=e=>{setAvatarState('idle');$('voiceStatus').textContent='Ovoz xatosi: '+e.error+'. Ovoz sozlamasini tekshiring.'};
  speechSynthesis.speak(u);
 }
@@ -496,24 +524,24 @@ function speakText(text, isTest=false, afterSpeak=null){
    if(serial!==speechSerial)return;
    setAvatarState('idle');$('voiceStatus').textContent='Tabiiy o‘zbekcha ovoz tayyor.';
    currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
-   if(typeof afterSpeak==='function'&&conversationMode)afterSpeak();
+   if(typeof afterSpeak==='function'&&(conversationMode||freeChatActive))afterSpeak();
   };
   audio.onerror=()=>{
    if(serial!==speechSerial)return;
    setAvatarState('idle');$('voiceStatus').textContent='Tabiiy audio ijro etilmadi. Internetni tekshiring.';
    currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
-   if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz xizmati ulanilmadi. Keyinroq qayta urinib ko‘ring.'}
+   if(freeChatActive){browserSpeakText(text,afterSpeak);return;} if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz xizmati ulanilmadi. Keyinroq qayta urinib ko‘ring.'}
   };
   audio.play().catch(err=>{
    if(serial!==speechSerial)return;
    setAvatarState('idle');$('voiceStatus').textContent='Audio ijrosi bloklandi. Avval “Ovoz namunasini eshitish” tugmasini bosing.';
    currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
-   if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz boshlanmadi. Ovoz namunasini tekshirib, qayta boshlang.'}
+   if(freeChatActive){browserSpeakText(text,afterSpeak);return;} if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz boshlanmadi. Ovoz namunasini tekshirib, qayta boshlang.'}
   });
  }).catch(err=>{
   if(serial!==speechSerial||err.name==='AbortError')return;
   setAvatarState('idle');$('voiceStatus').textContent='Tabiiy ovoz ulanilmadi: '+err.message+'. Internet va Start_JARVIS.bat oynasini tekshiring.';
-  if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Tabiiy ovoz vaqtincha ishlamadi. Qayta urinib ko‘ring.'}
+  if(freeChatActive){browserSpeakText(text,afterSpeak);return;} if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Tabiiy ovoz vaqtincha ishlamadi. Qayta urinib ko‘ring.'}
  });
 }
 function refreshVoices(){
@@ -723,6 +751,249 @@ async function processConversationalAnswer(user){
 }
 $('mic').onclick=()=>{if(conversationMode&&listening&&recognition){manualStopRequested=true;finalizingAnswer=true;clearAnswerTimers();try{recognition.stop()}catch(e){finishAnswerRound(answerRoundToken)}return}startListeningForAnswer(false)};
 $('review').onclick=()=>{const root=$('reviewList');root.innerHTML='';const weak=items.map((it,i)=>({it,i,r:results[i]})).filter(x=>x.r&&(x.r.correct===false || (x.r.correct===undefined&&x.r.ratio<.30)));if(!weak.length){root.textContent='Hozircha xato deb belgilangan savollar yo‘q.';return}weak.forEach(x=>{const d=document.createElement('div');d.className='qbox';const b=document.createElement('b');b.textContent=x.it.q;const p=document.createElement('p');p.textContent='Sizning javobingiz: '+x.r.user;const a=document.createElement('p');a.textContent='Namunaviy javob: '+(x.it.a||'Kiritilmagan');d.append(b,p,a);root.appendChild(d)})};
+
+
+
+// ---------------------- ERKIN GEMINI SUHBATI ----------------------
+let freeChatActive = false;
+let freeChatBusy = false;
+let freeChatListening = false;
+let freeChatRecognition = null;
+let freeChatTurnSerial = 0;
+let freeChatPauseTimer = null;
+let freeChatGuardTimer = null;
+let freeChatMessages = [];
+let freeChatOneShot = false;
+
+function setFreeChatStatus(text) {
+  const el = $('freeChatStatus');
+  if (el) el.textContent = text;
+}
+function addFreeChatMessage(role, text) {
+  const log = $('freeChatLog');
+  text = String(text || '').trim();
+  if (!log || !text) return;
+  const last = log.lastElementChild;
+  if (last && last.dataset.role === role && last.dataset.text === text) return;
+  const node = document.createElement('div');
+  node.className = 'chat-msg ' + (role === 'user' ? 'user' : 'jarvis');
+  node.dataset.role = role; node.dataset.text = text;
+  const who = document.createElement('span');
+  who.className = 'chat-who'; who.textContent = role === 'user' ? 'SIZ' : 'J.A.R.V.I.S.';
+  const body = document.createElement('span'); body.textContent = text;
+  node.append(who, body); log.appendChild(node);
+  while (log.children.length > 18) log.removeChild(log.firstChild);
+  log.scrollTop = log.scrollHeight;
+}
+function setFreeChatBusy(value) {
+  freeChatBusy = !!value;
+  $('freeChatSend').disabled = freeChatBusy;
+  $('freeChatMic').disabled = freeChatBusy;
+  $('freeChatInput').disabled = freeChatBusy;
+}
+function abortFreeChatRecognition() {
+  freeChatTurnSerial++;
+  if (freeChatPauseTimer) { clearTimeout(freeChatPauseTimer); freeChatPauseTimer = null; }
+  if (freeChatGuardTimer) { clearTimeout(freeChatGuardTimer); freeChatGuardTimer = null; }
+  const rec = freeChatRecognition;
+  freeChatRecognition = null;
+  freeChatListening = false;
+  if (rec) { try { rec.abort(); } catch (e) { try { rec.stop(); } catch (_) {} } }
+}
+function stopFreeChat(showStatus = true) {
+  freeChatActive = false; freeChatOneShot = false;
+  abortFreeChatRecognition();
+  speechSerial++;
+  stopCurrentSpeech();
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  setFreeChatBusy(false); setAvatarState('idle');
+  $('freeChatStart').classList.remove('active');
+  $('freeChatStart').textContent = '🗣️ Jonli suhbatni boshlash';
+  if (showStatus) setFreeChatStatus('Suhbat to‘xtatildi. Yana boshlash uchun tugmani bosing.');
+}
+function freeChatCommand(message) {
+  const s = String(message || '').toLocaleLowerCase('uz').replace(/[’‘ʻ`]/g, "'").replace(/[.!?,]/g, ' ').replace(/\s+/g, ' ').trim();
+  return /^(jarvis )?(to'xta|to'xtat|suhbatni to'xtat|suhbatni tugat|yakunla)( iltimos)?$/.test(s);
+}
+async function sendFreeChatMessage(rawMessage, fromVoice = false) {
+  const message = stripRepeatedChunks(String(rawMessage || '')).trim().slice(0, 1800);
+  if (!message || freeChatBusy) return;
+  // If the user sends text while mic is open, abort that listening turn first.
+  if (freeChatListening) abortFreeChatRecognition();
+  $('freeChatInput').value = '';
+  if (freeChatCommand(message)) {
+    addFreeChatMessage('user', message);
+    addFreeChatMessage('model', 'Mayli, suhbatni to‘xtatdim. Keyin yana gaplashamiz.');
+    stopFreeChat(false);
+    speakText('Mayli, suhbatni to‘xtatdim. Keyin yana gaplashamiz.');
+    return;
+  }
+  addFreeChatMessage('user', message);
+  setFreeChatBusy(true);
+  setFreeChatStatus('JARVIS javob o‘ylayapti…');
+  setAvatarState('idle');
+  const requestId = freeChatTurnSerial;
+  const messages = [...freeChatMessages.slice(-10), {role: 'user', text: message}];
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-Jarvis-Token': window.JARVIS_ACCESS_TOKEN || ''},
+      body: JSON.stringify({messages})
+    });
+    let data = {};
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok) throw new Error(data.error || ('AI server xatosi: ' + response.status));
+    const reply = String(data.reply || '').trim();
+    if (!reply) throw new Error('JARVIS bo‘sh javob qaytardi.');
+    // If user stopped the conversation while Gemini was replying, ignore the late response.
+    if (requestId !== freeChatTurnSerial) { setFreeChatBusy(false); return; }
+    freeChatMessages.push({role: 'user', text: message}, {role: 'model', text: reply});
+    if (freeChatMessages.length > 12) freeChatMessages = freeChatMessages.slice(-12);
+    addFreeChatMessage('model', reply);
+    setFreeChatStatus('JARVIS tayyor. Suhbatni davom ettiring.');
+    if (freeChatActive) {
+      speakText(reply, false, () => {
+        if (!freeChatActive) return;
+        setFreeChatBusy(false);
+        setFreeChatStatus('Sizni tinglayapman… gapiring.');
+        setTimeout(startFreeChatListening, 250);
+      });
+    } else {
+      setFreeChatBusy(false);
+      speakText(reply);
+    }
+  } catch (error) {
+    if (requestId !== freeChatTurnSerial) { setFreeChatBusy(false); return; }
+    setFreeChatBusy(false);
+    setFreeChatStatus('AI javob bera olmadi: ' + (error && error.message ? error.message : 'Ulanish xatosi'));
+    addFreeChatMessage('model', 'Hozir javob bera olmadim. Internet yoki Gemini API kalitini tekshirib, yana urinib ko‘ring.');
+    if (freeChatActive) setTimeout(startFreeChatListening, 700);
+  }
+}
+function startFreeChatListening() {
+  if ((!freeChatActive && !freeChatOneShot) || freeChatBusy || freeChatListening) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    setFreeChatStatus('Bu brauzer mikrofondan nutq tanishni qo‘llamaydi. Chrome’da matn yuborish tugmasidan foydalaning.');
+    return;
+  }
+  const turn = ++freeChatTurnSerial;
+  const rec = new SR();
+  freeChatRecognition = rec; freeChatListening = true;
+  let transcript = '';
+  let lastInterim = '';
+  let settled = false;
+  rec.lang = $('lang') ? $('lang').value : 'uz-UZ';
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 1;
+  setAvatarState('listening');
+  setFreeChatStatus('Sizni tinglayapman… odatdagidek gapiring.');
+  const finish = () => {
+    if (settled) return;
+    settled = true;
+    if (freeChatPauseTimer) { clearTimeout(freeChatPauseTimer); freeChatPauseTimer = null; }
+    if (freeChatGuardTimer) { clearTimeout(freeChatGuardTimer); freeChatGuardTimer = null; }
+    try { rec.stop(); } catch (e) {}
+  };
+  rec.onresult = event => {
+    if (turn !== freeChatTurnSerial || (!freeChatActive && !freeChatOneShot)) return;
+    const finals = [], interims = [];
+    for (let i = 0; i < event.results.length; i++) {
+      const result = event.results[i];
+      const text = String(result[0] && result[0].transcript || '').trim();
+      if (!text) continue;
+      (result.isFinal ? finals : interims).push(text);
+    }
+    transcript = stripRepeatedChunks(finals.join(' ')).trim();
+    lastInterim = stripRepeatedChunks(interims.join(' ')).trim();
+    const display = transcript || lastInterim;
+    if (display) $('freeChatInput').value = display;
+    if (transcript) {
+      if (freeChatPauseTimer) clearTimeout(freeChatPauseTimer);
+      freeChatPauseTimer = setTimeout(finish, 1300);
+    }
+  };
+  rec.onerror = event => {
+    if (turn !== freeChatTurnSerial) return;
+    const err = event.error || 'unknown';
+    if (err === 'no-speech' || err === 'aborted') return;
+    settled = true;
+    if (freeChatGuardTimer) clearTimeout(freeChatGuardTimer);
+    if (freeChatPauseTimer) clearTimeout(freeChatPauseTimer);
+    freeChatListening = false; freeChatRecognition = null; setAvatarState('idle');
+    if (err === 'not-allowed' || err === 'service-not-allowed' || err === 'audio-capture') {
+      freeChatActive = false; $('freeChatStart').classList.remove('active');
+      setFreeChatStatus('Mikrofon ruxsatini bering. Chrome sayt sozlamalaridan Microphone → Allow ni tanlang.');
+    } else {
+      setFreeChatStatus('Mikrofon vaqtincha ishlamadi: ' + err);
+      if (freeChatActive) setTimeout(startFreeChatListening, 800);
+    }
+  };
+  rec.onend = () => {
+    if (turn !== freeChatTurnSerial) return;
+    if (freeChatGuardTimer) { clearTimeout(freeChatGuardTimer); freeChatGuardTimer = null; }
+    if (freeChatPauseTimer) { clearTimeout(freeChatPauseTimer); freeChatPauseTimer = null; }
+    freeChatListening = false; freeChatRecognition = null; setAvatarState('idle');
+    const heard = stripRepeatedChunks((transcript || lastInterim || '').trim());
+    if (heard) {
+      $('freeChatInput').value = '';
+      freeChatOneShot = false;
+      sendFreeChatMessage(heard, true);
+    } else if (freeChatActive && !freeChatBusy) {
+      setFreeChatStatus('Hali gap eshitilmadi. Sizni yana tinglayapman…');
+      setTimeout(startFreeChatListening, 450);
+    }
+  };
+  freeChatGuardTimer = setTimeout(() => {
+    if (turn !== freeChatTurnSerial || settled) return;
+    if (transcript || lastInterim) finish();
+    else {
+      settled = true;
+      try { rec.stop(); } catch (e) {}
+    }
+  }, 22000);
+  try { rec.start(); }
+  catch (error) {
+    freeChatListening = false; freeChatRecognition = null; setAvatarState('idle');
+    setFreeChatStatus('Mikrofonni ishga tushira olmadim. Brauzer ruxsatini tekshiring.');
+    if (freeChatActive) setTimeout(startFreeChatListening, 1000);
+  }
+}
+function startFreeChat() {
+  if (freeChatActive) { setFreeChatStatus('Jonli suhbat allaqachon faol. Gapiring.'); return; }
+  if (conversationMode) { conversationMode = false; conversationSerial++; clearAnswerTimers(); }
+  freeChatActive = true; freeChatOneShot = false;
+  $('freeChatStart').classList.add('active'); $('freeChatStart').textContent = '🟢 Jonli suhbat faol';
+  if (!freeChatMessages.length) {
+    const greeting = 'Salom! Men JARVISman. Nima haqida gaplashamiz?';
+    addFreeChatMessage('model', greeting);
+    setFreeChatStatus('JARVIS gapiryapti…');
+    speakText(greeting, false, () => { if (freeChatActive) startFreeChatListening(); });
+  } else {
+    setFreeChatStatus('Sizni tinglayapman… gapiring.');
+    startFreeChatListening();
+  }
+}
+$('freeChatStart').onclick = startFreeChat;
+$('freeChatStop').onclick = () => stopFreeChat(true);
+$('freeChatSend').onclick = () => sendFreeChatMessage($('freeChatInput').value, false);
+$('freeChatMic').onclick = () => {
+  if (freeChatBusy) return;
+  freeChatOneShot = !freeChatActive;
+  if (!freeChatActive) setFreeChatStatus('Gapiring. Tugagach, javobni yuboraman.');
+  startFreeChatListening();
+};
+$('freeChatInput').addEventListener('keydown', event => {
+  if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendFreeChatMessage($('freeChatInput').value, false); }
+});
+fetch('/health', {cache: 'no-store'}).then(response => response.ok ? response.json() : null).then(health => {
+  if (!health) { setFreeChatStatus('Server holatini tekshirib bo‘lmadi. Sahifani yangilang.'); return; }
+  if (health.chat_enabled) setFreeChatStatus('Gemini AI ulangan. Jonli suhbatni boshlashingiz mumkin.');
+  else setFreeChatStatus('Gemini AI kaliti topilmadi. Render Environment’da GEMINI_API_KEY ni tekshiring.');
+}).catch(() => setFreeChatStatus('Server bilan aloqa yo‘q. Birozdan keyin qayta urinib ko‘ring.'));
+
+// -------------------- / ERKIN GEMINI SUHBATI ----------------------
 
 // Savol-javoblar sahifa ochilishi bilan avtomatik tayyor turadi.
 items=embeddedBank.map(x=>({q:x.q,a:x.a}));
