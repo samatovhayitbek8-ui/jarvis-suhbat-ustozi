@@ -13,8 +13,6 @@ from pathlib import Path
 from threading import Lock
 
 import edge_tts
-import edge_tts.constants as edge_constants
-import edge_tts.communicate as edge_communicate
 
 ROOT = Path(__file__).resolve().parent
 PUBLIC = ROOT / "public"
@@ -22,15 +20,6 @@ PORT = int(os.environ.get("PORT", "8765"))
 HOST = "0.0.0.0"
 ACCESS_TOKEN = os.environ.get("JARVIS_ACCESS_TOKEN") or secrets.token_urlsafe(28)
 ALLOWED_VOICES = {"uz-UZ-SardorNeural", "uz-UZ-MadinaNeural"}
-
-# New Edge TTS websocket endpoint observed working for this user's connection.
-# Keep the patch in both modules because communicate.py imports WSS_URL at module load.
-NEW_WSS_URL = "wss://api.msedgeservices.com/tts/cognitiveservices/websocket/v1?Ocp-Apim-Subscription-Key={TRUSTED_CLIENT_TOKEN}"
-try:
-    edge_constants.WSS_URL = NEW_WSS_URL
-    edge_communicate.WSS_URL = NEW_WSS_URL
-except Exception:
-    pass
 
 CYR_TO_LAT = {
     "А":"A", "Б":"B", "В":"V", "Г":"G", "Д":"D", "Ё":"Yo", "Ж":"J", "З":"Z", "И":"I", "Й":"Y", "К":"K", "Л":"L", "М":"M", "Н":"N", "О":"O", "П":"P", "Р":"R", "С":"S", "Т":"T", "У":"U", "Ф":"F", "Х":"X", "Ц":"Ts", "Ч":"Ch", "Ш":"Sh", "Щ":"Shch", "Ъ":"", "Ы":"I", "Ь":"", "Э":"E", "Ю":"Yu", "Я":"Ya",
