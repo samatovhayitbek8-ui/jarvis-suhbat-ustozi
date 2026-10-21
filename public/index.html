@@ -134,12 +134,23 @@ select,input[type=text]{min-height:44px;font-size:16px}
 @media(min-width:621px) and (max-width:900px){main{grid-template-columns:minmax(0,1fr)}.wide,.conversation-card,.holo-stage{grid-column:1}}
 @media(pointer:coarse){button{padding:13px 14px}}
 
+
+/* Compact hands-free live mode */
+#start{display:none!important}
+#importPanel{display:none!important}
+body.live-active #check,body.live-active #showAnswer,body.live-active #next,body.live-active #speak,body.live-active #mic{display:none!important}
+body.live-active label[for="userAnswer"],body.live-active #userAnswer{display:none!important}
+.live-hint{margin:6px 0;font-size:12px}
+.conversation-log{max-height:240px!important}
+#modelAnswer{font-size:14px;max-height:120px;overflow:auto}
+#feedback{font-weight:700}
+@media(max-width:620px){main{padding:10px 8px 22px;gap:8px}.card{padding:11px}.holo-stage{padding:8px}.avatar-copy p{margin-bottom:7px}.conversation-log{max-height:27vh!important}.qbox{padding:12px;margin:8px 0}.question{font-size:19px}.live-hint{font-size:12px}.voice-note{font-size:12px;padding:8px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 </head>
 <body>
-<header><div class="wrap"><h1>◉ SUHBAT USTOZI</h1><p>SOLIQ-SERVIS · INTELLEKTUAL SUHBAT TRENAJYORI</p><div class="assistant-status">JARVIS MODE · MICROSOFT TABIIY OVOZ</div></div></header>
+<header><div class="wrap"><h1>◉ SUHBAT USTOZI</h1><p>SOLIQ-SERVIS · SUHBAT MASHQI</p><div class="assistant-status">JARVIS MODE · MICROSOFT TABIIY OVOZ</div></div></header>
 <main>
 
 <section id="holoStage" class="holo-stage wide" aria-label="Animatsiyali JARVIS yordamchisi">
@@ -193,11 +204,11 @@ select,input[type=text]{min-height:44px;font-size:16px}
       <path d="M18 320 L48 320 M212 320 L242 320" stroke="#55eaff" stroke-width="1.3" opacity=".55"/>
     </svg>
   </div>
-  <div class="avatar-copy"><div class="avatar-label">HOLOGRAPHIC INTERFACE · AI ASSISTANT</div><h2>J.A.R.V.I.S.</h2><p>Salom. Men sening suhbat yordamchingman. Savollarni beraman, javobingni tinglayman va tayyorgarligingni baholashga yordam beraman.</p><div class="avatar-live"><i></i><span id="avatarStatusText">TIZIM TAYYOR · SIZNI KUTYAPMAN</span></div></div>
+  <div class="avatar-copy"><div class="avatar-label">HOLOGRAPHIC INTERFACE · AI ASSISTANT</div><h2>J.A.R.V.I.S.</h2><p>Salom. Savol beraman, seni tinglayman va javobingni qisqa tekshiraman.</p><div class="avatar-live"><i></i><span id="avatarStatusText">TIZIM TAYYOR · SIZNI KUTYAPMAN</span></div></div>
 </section>
 
-<section class="card wide">
-<h2>1. Savol-javob faylini yuklash</h2>
+<section id="importPanel" class="card wide">
+<h2>PDF savol-javoblari</h2>
 <p class="muted">PDF yoki Word (.docx) fayl tanlang. Dastur matndan savol va javoblarni ajratishga urinadi. Faylingiz skaner qilingan rasm bo‘lsa, matnni quyidagi maydonga nusxalash kerak bo‘lishi mumkin.</p>
 <div class="row"><input id="file" type="file" accept=".pdf,.docx,.txt"><button id="load" type="button">Faylni o‘qish</button></div>
 <div id="fileStatus" class="status muted" aria-live="polite"></div>
@@ -209,8 +220,8 @@ select,input[type=text]{min-height:44px;font-size:16px}
 <div id="stats" class="stats"></div>
 </section>
 <section class="card">
-<h2>2. Imtihon sozlamalari</h2>
-<p class="muted">Savol ekranda ko‘rinadi va ovozli o‘qilishi mumkin. Javobni yozing yoki mikrofon orqali ayting.</p>
+<h2>Imtihon sozlamalari</h2>
+
 <label for="category" class="muted">Savollar bo‘limi</label>
 <select id="category" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 12px;font:inherit">
 <option value="all">Barchasi — 240 ta savol</option><option value="accounting">Buxgalteriya hisobi — 100 ta</option><option value="tax">Soliq qonunchiligi — 100 ta</option><option value="pf100">PF–100-son Farmon — 40 ta qo‘shimcha savol</option>
@@ -225,12 +236,12 @@ select,input[type=text]{min-height:44px;font-size:16px}
 </select>
 <label for="voiceChoice" class="muted">Tabiiy ovoz (kompyuterda mavjud ovozlar)</label>
 <select id="voiceChoice" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 8px;font:inherit"><option value="edge-sardor" selected>Microsoft tabiiy o‘zbekcha — Sardor (erkak, onlayn)</option><option value="edge-madina">Microsoft tabiiy o‘zbekcha — Madina (ayol, onlayn)</option><option value="auto">Brauzer ovozi — avtomatik tanlash</option></select>
-<div class="row"><button id="testVoice" class="secondary">▶ Ovoz namunasini eshitish</button><button id="start">Matnli/oddiy imtihon</button><button id="liveConversation">🗣️ JARVIS bilan jonli suhbat</button><button id="stop" class="ghost">Suhbatni to‘xtatish</button></div><p class="live-hint">Jonli rejim: savolni tinglang va gapiring. Javobdan keyin 10 soniya sukut bo‘lsa, JARVIS “To‘g‘ri” yoki “Noto‘g‘ri” deydi. Keyingi savol avvalgi ovoz tugagandan keyin boshlanadi. Mikrofon ruxsati kerak.</p>
-<div id="voiceStatus" class="voice-note" aria-live="polite">Mavjud ovozlar aniqlanmoqda...</div>
-<p class="muted">Sardor va Madina — Microsoft’ning tabiiy o‘zbekcha onlayn ovozlari. Ulardan foydalanish uchun internet hamda Start_JARVIS.bat orqali ishga tushirilgan mahalliy ovoz xizmati kerak. Jonli mashqda yordamchi faqat kerakli gapni aytadi, javobning to‘liq namunasi ekranda qoladi. Onlayn xizmat ulanmasa, robot ovoziga avtomatik o‘tmaydi; ulanish xabarini ko‘rsatadi.</p>
+<div class="row"><button id="testVoice" class="secondary">▶ Ovoz namunasini eshitish</button><button id="start">Matnli/oddiy imtihon</button><button id="liveConversation">🗣️ JARVIS bilan jonli suhbat</button><button id="stop" class="ghost">Suhbatni to‘xtatish</button></div><p class="live-hint">Jonli suhbatni boshlang. Gapirib bo‘lgach, 10 soniya jim turing — JARVIS o‘zi tekshiradi.</p>
+<div id="voiceStatus" class="voice-note" aria-live="polite">Tabiiy ovoz yuklanmoqda...</div><div id="aiStatus" class="muted" style="font-size:12px;margin-top:5px"></div>
+
 </section>
 <section class="card">
-<h2>3. Hozirgi savol</h2>
+<h2>Hozirgi savol</h2>
 <div class="progress"><span id="bar"></span></div>
 <div id="examEmpty" class="muted" style="margin-top:12px">PDFdagi savollar tayyor: avval dasturdagi savollar tayyorligini tekshiring, bo‘limni tanlang va imtihonni boshlang.</div>
 <div id="exam" class="hidden">
@@ -241,13 +252,13 @@ select,input[type=text]{min-height:44px;font-size:16px}
 </div>
 <div id="conversationLog" class="conversation-log" aria-live="polite"><div class="chat-msg jarvis"><span class="chat-who">J.A.R.V.I.S.</span>Jonli suhbatni boshlash uchun yuqoridagi tugmani bosing.</div></div>
 <label for="userAnswer" class="muted">Javobingiz</label><textarea id="userAnswer" placeholder="Javobingizni yozing yoki mikrofon orqali ayting..."></textarea>
-<div class="row" style="margin-top:10px"><button id="check">Javobni tekshirish</button><button id="showAnswer" class="secondary">Namunaviy javob</button><button id="next" class="ghost">Keyingi savol →</button></div>
+<div class="row manual-controls" style="margin-top:10px"><button id="check">Javobni tekshirish</button><button id="showAnswer" class="secondary">Namunaviy javob</button><button id="next" class="ghost">Keyingi savol →</button></div>
 <div id="feedback" class="status" aria-live="polite"></div>
 <div id="modelAnswer" class="answer hidden"></div>
 </div>
 </section>
 <section class="card">
-<h2>4. Natijalar</h2>
+<h2>Natija</h2>
 <div class="stats"><span class="pill" id="doneCount">Javob berilgan: 0</span><span class="pill" id="correctCount">Yaxshi javob: 0</span><span class="pill" id="weakCount">Qaytarish kerak: 0</span></div>
 <p class="muted">Javoblar so‘zma-so‘z emas, asosiy tushunchalar, yaqin ma’noli so‘zlar va gap mazmuniga yaqinlik bo‘yicha taxminiy tekshiriladi. Bu mahalliy tekshiruv haqiqiy AI semantik tahlilining o‘rnini to‘liq bosa olmaydi.</p>
 <button id="review" class="secondary">Xato savollarni ko‘rish</button>
@@ -491,18 +502,18 @@ function speakText(text, isTest=false, afterSpeak=null){
    if(serial!==speechSerial)return;
    setAvatarState('idle');$('voiceStatus').textContent='Tabiiy audio ijro etilmadi. Internetni tekshiring.';
    currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
-   if(conversationMode){conversationMode=false;$('micStatus').textContent='Ovoz ishlamadi. Start_JARVIS.bat oynasi va internetni tekshiring.'}
+   if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz xizmati ulanilmadi. Keyinroq qayta urinib ko‘ring.'}
   };
   audio.play().catch(err=>{
    if(serial!==speechSerial)return;
    setAvatarState('idle');$('voiceStatus').textContent='Audio ijrosi bloklandi. Avval “Ovoz namunasini eshitish” tugmasini bosing.';
    currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
-   if(conversationMode){conversationMode=false;$('micStatus').textContent='Ovoz boshlanmadi. Ovoz namunasini eshiting va suhbatni qayta boshlang.'}
+   if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Ovoz boshlanmadi. Ovoz namunasini tekshirib, qayta boshlang.'}
   });
  }).catch(err=>{
   if(serial!==speechSerial||err.name==='AbortError')return;
   setAvatarState('idle');$('voiceStatus').textContent='Tabiiy ovoz ulanilmadi: '+err.message+'. Internet va Start_JARVIS.bat oynasini tekshiring.';
-  if(conversationMode){conversationMode=false;$('micStatus').textContent='Tabiiy ovoz xizmati javob bermadi. Ulanishni tuzatib, suhbatni qayta boshlang.'}
+  if(conversationMode){conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Tabiiy ovoz vaqtincha ishlamadi. Qayta urinib ko‘ring.'}
  });
 }
 function refreshVoices(){
@@ -515,29 +526,59 @@ function refreshVoices(){
  if(availableVoices.length)select.appendChild(group);
  const valid=[...select.options].some(o=>o.value===previous);select.value=valid?previous:'edge-sardor';
  const uz=availableVoices.filter(v=>(v.lang||'').toLowerCase().startsWith('uz'));
- $('voiceStatus').textContent='Tavsiya: Microsoft tabiiy o‘zbekcha Sardor ovozi. Buning uchun Start_JARVIS.bat orqali ilovani oching va internetni yoqing.'+(uz.length?' Kompyuterda ham o‘zbekcha ovoz bor: '+uz.map(v=>v.name).join(', ')+'.':'');
+ $('voiceStatus').textContent=select.value==='edge-madina'?'Tabiiy o‘zbekcha ovoz: Madina.':select.value==='auto'?'Brauzer ovozi tanlangan.':'Tabiiy o‘zbekcha ovoz: Sardor.';
 }
 $('speak').onclick=()=>speakText($('question').textContent);
 $('testVoice').onclick=()=>speakText('Assalomu alaykum. Suhbat mashqini boshlaymiz. Savolni diqqat bilan tinglang va javobni o‘z so‘zingiz bilan ayting.',true);
-if('speechSynthesis'in window){refreshVoices();speechSynthesis.onvoiceschanged=refreshVoices;setTimeout(refreshVoices,500)}$('stop').onclick=()=>{conversationMode=false;conversationSerial++;speechSerial++;stopCurrentSpeech();if('speechSynthesis'in window)speechSynthesis.cancel();if(recognition&&listening){try{recognition.stop()}catch(e){}}listening=false;setAvatarState('idle');$('micStatus').textContent='Suhbat to‘xtatildi.';$('voiceStatus').textContent='JARVIS kutish rejimida.'};
+if('speechSynthesis'in window){refreshVoices();speechSynthesis.onvoiceschanged=refreshVoices;setTimeout(refreshVoices,500)}$('stop').onclick=()=>{conversationMode=false;document.body.classList.remove('live-active');conversationSerial++;speechSerial++;stopCurrentSpeech();if('speechSynthesis'in window)speechSynthesis.cancel();if(recognition&&listening){try{recognition.stop()}catch(e){}}listening=false;setAvatarState('idle');$('micStatus').textContent='Suhbat to‘xtatildi.';$('voiceStatus').textContent='JARVIS kutish rejimida.'};
 function addChatMessage(who, text){
  const log=$('conversationLog');if(!log)return;
- const d=document.createElement('div');d.className='chat-msg '+(who==='user'?'user':'jarvis');
+ text=String(text||'').trim();if(!text)return;
+ const last=log.lastElementChild;
+ if(last&&last.dataset.who===who&&last.dataset.message===text)return;
+ const d=document.createElement('div');d.className='chat-msg '+(who==='user'?'user':'jarvis');d.dataset.who=who;d.dataset.message=text;
  const name=document.createElement('span');name.className='chat-who';name.textContent=who==='user'?'SIZ':'J.A.R.V.I.S.';
  const body=document.createElement('span');body.textContent=text;d.append(name,body);log.appendChild(d);
- while(log.children.length>32)log.removeChild(log.firstChild);log.scrollTop=log.scrollHeight;
+ while(log.children.length>6)log.removeChild(log.firstChild);log.scrollTop=log.scrollHeight;
 }
+async function evaluateWithAI(question,userAnswer,referenceAnswer){
+ try{
+  const r=await fetch('/evaluate',{method:'POST',headers:{'Content-Type':'application/json','X-Jarvis-Token':window.JARVIS_ACCESS_TOKEN||''},body:JSON.stringify({question,user_answer:userAnswer,reference_answer:referenceAnswer})});
+  if(!r.ok)return null;const data=await r.json();return data&&data.ai&&typeof data.correct==='boolean'?data:null;
+ }catch(e){return null}
+}
+function shortCorrection(text){
+ let t=String(text||'').replace(/\s+/g,' ').trim();
+ t=t.split(/(?<=[.!?])\s+/)[0]||t;
+ const words=t.split(' ');if(words.length>19)t=words.slice(0,19).join(' ')+'…';
+ return t.slice(0,190);
+}
+
 const ANSWER_SILENCE_MS=10000;
 let answerSilenceTimer=null, noAnswerTimer=null, answerRoundToken=0;
 let answerTextAccumulated='', speechStarted=false, lastSpeechAt=0, listeningStartedAt=0;
 let currentSessionTranscript='', finalizingAnswer=false, manualStopRequested=false;
 function clearAnswerTimers(){if(answerSilenceTimer){clearTimeout(answerSilenceTimer);answerSilenceTimer=null}if(noAnswerTimer){clearTimeout(noAnswerTimer);noAnswerTimer=null}}
+function stripRepeatedChunks(text){
+ let words=String(text||'').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);
+ const norm=w=>w.toLocaleLowerCase('uz').replace(/[.,!?;:()[\]{}“”"'’‘ʻ]/g,'');
+ let changed=true,passes=0;
+ while(changed&&passes++<16){changed=false;
+  outer: for(let size=Math.min(36,Math.floor(words.length/2));size>=4;size--){
+   for(let i=0;i+2*size<=words.length;i++){
+    let same=true;for(let j=0;j<size;j++){if(norm(words[i+j])!==norm(words[i+size+j])){same=false;break}}
+    if(same){words.splice(i+size,size);changed=true;break outer}
+   }
+  }
+ }
+ return words.join(' ');
+}
 function mergeTranscript(base, extra){
- base=String(base||'').trim();extra=String(extra||'').trim();
+ base=stripRepeatedChunks(String(base||'').trim());extra=stripRepeatedChunks(String(extra||'').trim());
  if(!extra)return base;if(!base)return extra;if(base===extra||base.endsWith(extra))return base;
  const a=base.split(/\s+/),b=extra.split(/\s+/);let overlap=0;
- for(let n=Math.min(a.length,b.length,12);n>0;n--){if(a.slice(-n).join(' ').toLocaleLowerCase('uz')===b.slice(0,n).join(' ').toLocaleLowerCase('uz')){overlap=n;break}}
- return (base+' '+b.slice(overlap).join(' ')).trim();
+ for(let n=Math.min(a.length,b.length,30);n>0;n--){if(a.slice(-n).join(' ').toLocaleLowerCase('uz')===b.slice(0,n).join(' ').toLocaleLowerCase('uz')){overlap=n;break}}
+ return stripRepeatedChunks((base+' '+b.slice(overlap).join(' ')).trim());
 }
 function scheduleSilenceCheck(token){
  if(answerSilenceTimer)clearTimeout(answerSilenceTimer);
@@ -551,7 +592,7 @@ function scheduleSilenceCheck(token){
 function conversationalQuestion(){
  if(!conversationMode||!order.length)return;
  if(pos>=order.length){
-  conversationMode=false;setAvatarState('idle');
+  conversationMode=false;document.body.classList.remove('live-active');setAvatarState('idle');
   const msg='Bo‘lim tugadi.';addChatMessage('jarvis',msg);$('micStatus').textContent='Imtihon tugadi. Natijangiz ekranda.';$('feedback').textContent='Jonli suhbat yakunlandi.';return;
  }
  showCurrent();
@@ -569,9 +610,9 @@ function startLiveConversation(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR){$('voiceStatus').textContent='Jonli suhbat uchun Chrome yoki Edge mikrofon orqali nutqni tanishi kerak.';return}
  if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Bu brauzer ovoz chiqarishni qo‘llamaydi.';return}
- conversationMode=true;listenRetry=0;recognitionError='';conversationSerial++;
+ conversationMode=true;document.body.classList.add('live-active');listenRetry=0;recognitionError='';conversationSerial++;
  $('conversationLog').innerHTML='';clearAnswerTimers();answerTextAccumulated='';speechStarted=false;finalizingAnswer=false;
- startExam();if(!order.length){conversationMode=false;return}
+ startExam();if(!order.length){conversationMode=false;document.body.classList.remove('live-active');return}
  conversationalQuestion();
 }
 function startListeningForAnswer(automatic=false, continuation=false){
@@ -598,33 +639,43 @@ function launchRecognitionSession(token){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!conversationMode||token!==answerRoundToken||listening||finalizingAnswer)return;
  recognitionError='';currentSessionTranscript='';
- const sessionParts=[];const baseAtStart=answerTextAccumulated;
+ const sessionParts=[];const baseAtStart=answerTextAccumulated;let currentFinal='',currentInterim='',lastShown='';
  const localRecognition=new SR();recognition=localRecognition;localRecognition.lang=$('lang').value;localRecognition.interimResults=true;localRecognition.continuous=true;listening=true;
- setAvatarState('listening');$('micStatus').textContent='Javobingizni tinglayapman. 10 soniya sukutdan keyin baholayman.';
+ setAvatarState('listening');$('micStatus').textContent='Tinglayapman… gapirib bo‘lgach, 10 soniya jim turing.';
  localRecognition.onresult=e=>{
   if(token!==answerRoundToken)return;
-  for(let i=0;i<e.results.length;i++)sessionParts[i]=e.results[i][0].transcript;
-  currentSessionTranscript=sessionParts.filter(Boolean).join(' ').trim();
-  const combined=mergeTranscript(baseAtStart,currentSessionTranscript);
-  if(combined){$('userAnswer').value=combined;speechStarted=true;lastSpeechAt=Date.now();if(noAnswerTimer){clearTimeout(noAnswerTimer);noAnswerTimer=null}scheduleSilenceCheck(token)}
+  for(let i=e.resultIndex;i<e.results.length;i++){
+   const res=e.results[i];sessionParts[i]={text:String(res[0].transcript||'').trim(),final:!!res.isFinal};
+  }
+  currentFinal=sessionParts.filter(x=>x&&x.final&&x.text).map(x=>x.text).join(' ').trim();
+  currentInterim=sessionParts.filter(x=>x&&!x.final&&x.text).map(x=>x.text).join(' ').trim();
+  currentSessionTranscript=stripRepeatedChunks(currentFinal?mergeTranscript(currentFinal,currentInterim):currentInterim);
+  const stable=mergeTranscript(baseAtStart,currentFinal);
+  const combined=stripRepeatedChunks(currentInterim?mergeTranscript(stable,currentInterim):stable);
+  if(combined&&combined!==lastShown){
+   $('userAnswer').value=combined;lastShown=combined;speechStarted=true;lastSpeechAt=Date.now();
+   if(noAnswerTimer){clearTimeout(noAnswerTimer);noAnswerTimer=null}
+   scheduleSilenceCheck(token);
+  }
  };
- localRecognition.onerror=e=>{recognitionError=e.error;if(e.error!=='no-speech')$('micStatus').textContent='Mikrofon: '+e.error};
+ localRecognition.onerror=e=>{recognitionError=e.error;if(e.error!=='no-speech')$('micStatus').textContent='Mikrofon xatosi: '+e.error};
  localRecognition.onend=()=>{
   if(token!==answerRoundToken)return;
   listening=false;setAvatarState('idle');
-  answerTextAccumulated=mergeTranscript(answerTextAccumulated,currentSessionTranscript);
+  // Save final text once; use interim text only if the engine never finalized anything.
+  const accepted=currentFinal?mergeTranscript(currentFinal,currentInterim):currentInterim;
+  answerTextAccumulated=mergeTranscript(answerTextAccumulated,accepted);
   $('userAnswer').value=answerTextAccumulated;
   if(!conversationMode)return;
-  if(['not-allowed','service-not-allowed','audio-capture'].includes(recognitionError)){clearAnswerTimers();conversationMode=false;$('micStatus').textContent='Mikrofon ruxsati yo‘q yoki mikrofon band. Chrome/Edge sozlamasidan mikrofon ruxsatini bering.';return}
+  if(['not-allowed','service-not-allowed','audio-capture'].includes(recognitionError)){clearAnswerTimers();conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Mikrofon ruxsatini bering.';return}
   if(finalizingAnswer||manualStopRequested){finishAnswerRound(token);return}
   const elapsed=Date.now()-(speechStarted?lastSpeechAt:listeningStartedAt);
   if(elapsed>=ANSWER_SILENCE_MS){finishAnswerRound(token);return}
-  // Chrome/Edge sometimes ends a recognition session during a pause. Preserve what was heard
-  // and reopen the mic, while the 10-second silence clock keeps running.
-  setTimeout(()=>launchRecognitionSession(token),250);
+  setTimeout(()=>launchRecognitionSession(token),180);
  };
- try{localRecognition.start()}catch(e){listening=false;setAvatarState('idle');$('micStatus').textContent='Mikrofonni ishga tushirib bo‘lmadi: '+e.message;setTimeout(()=>{if(conversationMode&&token===answerRoundToken&&!finalizingAnswer)launchRecognitionSession(token)},500)}
+ try{localRecognition.start()}catch(e){listening=false;setAvatarState('idle');$('micStatus').textContent='Mikrofon ishga tushmadi. Sahifa mikrofon ruxsatini tekshiring.';setTimeout(()=>{if(conversationMode&&token===answerRoundToken&&!finalizingAnswer)launchRecognitionSession(token)},450)}
 }
+
 function finishAnswerRound(token){
  if(token!==answerRoundToken||!conversationMode)return;
  clearAnswerTimers();finalizingAnswer=false;manualStopRequested=false;
@@ -632,37 +683,42 @@ function finishAnswerRound(token){
  const answer=$('userAnswer').value.trim();
  answerRoundToken++; // ignore any delayed onend/restart callback from this recording session
  if(!answer){
-  if(listenRetry<1){listenRetry++;const currentQ=items[order[pos]].q;addChatMessage('jarvis','Javob eshitilmadi.');speakText('Javob eshitilmadi.',false,()=>{if(conversationMode)conversationalQuestion()});}
-  else{conversationMode=false;$('micStatus').textContent='Javob eshitilmadi. Mikrofonni tekshiring va qayta boshlang.';setAvatarState('idle')}
+  if(listenRetry<1){listenRetry++;const currentQ=items[order[pos]].q;$('micStatus').textContent='Javob eshitilmadi. Savolni qayta beraman.';speakText('Qayta urinib ko‘ramiz.',false,()=>{if(conversationMode)conversationalQuestion()});}
+  else{conversationMode=false;document.body.classList.remove('live-active');$('micStatus').textContent='Javob eshitilmadi. Mikrofon ruxsatini tekshiring.';setAvatarState('idle')}
   return;
  }
  listenRetry=0;processConversationalAnswer(answer);
 }
-function processConversationalAnswer(user){
+async function processConversationalAnswer(user){
  if(!conversationMode||!order.length)return;
  const spokenCommand=String(user).toLocaleLowerCase('uz').replace(/[’‘ʻ`]/g,"'").replace(/[.!?,]/g,' ').replace(/\s+/g,' ').trim();
  if(/^(jarvis )?(to'xta|to'xtat|suhbatni to'xtat|yakunla|suhbatni tugat)( iltimos)?$/.test(spokenCommand)){
-  conversationMode=false;conversationSerial++;clearAnswerTimers();setAvatarState('idle');const bye='Suhbat to‘xtatildi.';addChatMessage('user',user);addChatMessage('jarvis',bye);speakText(bye);return;
+  conversationMode=false;document.body.classList.remove('live-active');conversationSerial++;clearAnswerTimers();setAvatarState('idle');const bye='Suhbat tugadi.';addChatMessage('user',user);addChatMessage('jarvis',bye);speakText(bye);return;
  }
  if(/(savolni takrorla|qayta so'ra|yana bir marta|savolni qaytar)/.test(spokenCommand)){
   addChatMessage('user',user);speakText(items[order[pos]].q,false,()=>{if(conversationMode)startListeningForAnswer(true)});return;
  }
- const idx=order[pos],it=items[idx],ev=evaluateAnswer(user,it.a||''),ratio=ev.ratio;
- const correct=ratio>=.30 && (ev.matched.length>=2 || ev.keys.length<=4 && ev.matched.length>=1);
- results[idx]={user,ratio,matched:ev.matched,keys:ev.keys,correct};
- addChatMessage('user',user);renderStats();
- const shortAnswer=(it.a||'').replace(/\s+/g,' ').trim();
+ const idx=order[pos],it=items[idx],session=conversationSerial;
+ const ev=evaluateAnswer(user,it.a||''),ratio=ev.ratio;
+ let correct=ratio>=.28&&(ev.matched.length>=2||(ev.keys.length<=5&&ev.matched.length>=1));
+ let correction=shortCorrection(it.a||'');let aiUsed=false;
+ $('micStatus').textContent='Javob tekshirilmoqda…';
+ const ai=await evaluateWithAI(it.q,user,it.a||'');
+ if(!conversationMode||session!==conversationSerial||order[pos]!==idx)return;
+ if(ai){correct=ai.correct;correction=ai.correction||correction;aiUsed=true}
+ results[idx]={user,ratio,matched:ev.matched,keys:ev.keys,correct,ai:aiUsed};
+ addChatMessage('user',stripRepeatedChunks(user));renderStats();
  const verdict=correct?'To‘g‘ri.':'Noto‘g‘ri.';
- $('feedback').className='status '+(correct?'good':'bad');$('feedback').textContent=verdict;
- if(!correct){$('modelAnswer').textContent='PDFdagi to‘g‘ri javob: '+shortAnswer;$('modelAnswer').classList.remove('hidden')}
- else {$('modelAnswer').classList.add('hidden')}
+ $('feedback').className='status '+(correct?'good':'bad');$('feedback').textContent=verdict+(aiUsed?' · AI':'');
+ if(!correct){$('modelAnswer').textContent='To‘g‘ri javob: '+correction;$('modelAnswer').classList.remove('hidden')}
+ else {$('modelAnswer').classList.add('hidden');$('modelAnswer').textContent=''}
  addChatMessage('jarvis',verdict);
- if(!correct)addChatMessage('jarvis','To‘g‘ri javob: '+shortAnswer);
+ const spoken=correct?'To‘g‘ri.':('Noto‘g‘ri. To‘g‘ri javob: '+correction);
  const nextPos=pos+1;
- speakText(verdict,false,()=>{
-  if(!conversationMode)return;
+ speakText(spoken,false,()=>{
+  if(!conversationMode||session!==conversationSerial)return;
   if(nextPos<order.length){pos=nextPos;conversationalQuestion()}
-  else{conversationMode=false;setAvatarState('idle');$('bar').style.width='100%';$('micStatus').textContent='Imtihon tugadi.';$('feedback').textContent+=' Natijangiz ekranda.'}
+  else{conversationMode=false;document.body.classList.remove('live-active');setAvatarState('idle');$('bar').style.width='100%';$('micStatus').textContent='Tayyor. Imtihon tugadi.';$('feedback').textContent+=' Natija saqlandi.'}
  });
 }
 $('mic').onclick=()=>{if(conversationMode&&listening&&recognition){manualStopRequested=true;finalizingAnswer=true;clearAnswerTimers();try{recognition.stop()}catch(e){finishAnswerRound(answerRoundToken)}return}startListeningForAnswer(false)};
@@ -671,8 +727,9 @@ $('review').onclick=()=>{const root=$('reviewList');root.innerHTML='';const weak
 // Savol-javoblar sahifa ochilishi bilan avtomatik tayyor turadi.
 items=embeddedBank.map(x=>({q:x.q,a:x.a}));
 $('fileStatus').textContent='PDFdagi 240 ta savol-javob dastur ichiga kiritilgan. Faylni qayta yuklash shart emas.';
-$('parseStatus').textContent='Tayyor: 100 ta buxgalteriya + 100 ta soliq qonunchiligi + 40 ta PF–100-son Farmon savoli.';
+$('parseStatus').textContent='240 ta savol tayyor.';
 renderStats();
+fetch('/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(h=>{if(!$('aiStatus'))return;$('aiStatus').textContent=h&&h.ai_enabled?'AI baholashi faol.':'Oddiy baholash faol. AI ulash uchun Render’da OPENAI_API_KEY sozlang.'}).catch(()=>{});
 })();
 </script>
 <script>

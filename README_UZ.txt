@@ -36,3 +36,15 @@ XAVFSIZLIK VA CHEKLOVLAR
 - Render Blueprint JARVIS_ACCESS_TOKEN ni tasodifiy generatsiya qiladi. Server TTS so‘rovlarini shu token bilan tekshiradi va IP bo‘yicha tezlik chegarasiga ega.
 - Bu o‘quv uchun mo‘ljallangan shaxsiy vosita. Ovoz xizmatining uchinchi tomon shartlari va ishlashi o‘zgarishi mumkin.
 - PDF matnidagi namuna javoblar savollarni avtomatik tekshirish uchun ishlatiladi. Algoritmik baho mazmuniy insoniy baholashning aynan o‘zi emas.
+
+
+YANGI: IXTIYORIY AI BAHOLASH
+-----------------------------
+Sayt AI bo‘lmasa ham ishlaydi va mahalliy kalit-so‘z algoritmi bilan baholaydi. Mazmunni so‘zma-so‘z talab qilmaydigan AI baholashini yoqish uchun: Render Dashboard → jarvis-suhbat-ustozi → Environment → Add Environment Variable.
+Key: OPENAI_API_KEY
+Value: OpenAI API hisobingizdan olgan maxfiy API kalitingiz. Uni GitHub kodiga, HTML faylga yoki chatga yozmang. Keyin Save Changes/Deploy qiling. Ixtiyoriy model sozlamasi: OPENAI_MODEL=gpt-4.1-mini.
+OpenAI API alohida hisob-kitob qilinadi; ChatGPT obunasi API krediti degani emas. AI yoqilganda savol, namunaviy javob va foydalanuvchi javobi baholash uchun OpenAI API’ga yuboriladi.
+
+JONLI REJIM TUZATISHLARI
+------------------------
+Jonli suhbatda transkriptni qayta-qayta yozib yuborish muammosi uchun final/interim nutq natijalari alohida saqlanadi va bir xil takrorlangan iboralar tozalanadi. Jonli rejimda “Javobni tekshirish” tugmasi yashiriladi; 10 soniya sukutdan keyin avtomatik tekshiruv va keyingi savol ishlaydi.
