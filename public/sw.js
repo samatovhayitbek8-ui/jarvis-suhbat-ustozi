@@ -1,4 +1,4 @@
-const CACHE = 'jarvis-voice-control-v4';
+const CACHE = 'jarvis-voice-control-v5-micfix';
 const CORE = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
