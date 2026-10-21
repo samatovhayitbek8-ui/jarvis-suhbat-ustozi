@@ -1,0 +1,15 @@
+{
+  "name": "JARVIS — Suhbat Ustozi",
+  "short_name": "JARVIS",
+  "description": "Suhbatga ovozli va matnli tayyorgarlik. Buxgalteriya va soliq savol-javoblari.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07111e",
+  "theme_color": "#07111e",
+  "icons": [
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

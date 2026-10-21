@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JARVIS Suhbat">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Suhbat Ustozi — JARVIS mobil suhbat</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#172033;--muted:#657087;--line:#e1e6ef;--blue:#285de8;--blue2:#eaf0ff;--green:#16794b;--red:#b54735}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{background:#14213d;color:white;padding:26px 18px}header .wrap,main{max-width:1000px;margin:auto}h1{margin:0 0 5px;font-size:clamp(25px,4vw,34px)}header p{margin:0;color:#d6def0}
+main{padding:20px 14px 48px;display:grid;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 5px 18px #14213d08}
+h2{font-size:20px;margin:0 0 12px}.muted{color:var(--muted);font-size:14px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,.filelabel{border:0;border-radius:11px;background:var(--blue);color:white;font-weight:650;padding:11px 15px;cursor:pointer;font-size:15px}
+button.secondary{background:var(--blue2);color:#2149b5}button.ghost{background:#eef0f5;color:#30394b}button:disabled{opacity:.45;cursor:not-allowed}
+input[type=file]{max-width:100%}textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.pill{background:#f0f3f8;padding:5px 10px;border-radius:99px;font-size:13px;color:#3d4b63}
+.qbox{background:#f7f9fd;border:1px solid var(--line);padding:17px;border-radius:14px;margin:12px 0}.qnum{color:var(--blue);font-size:13px;font-weight:750}.question{font-size:21px;font-weight:750;margin:5px 0 12px;white-space:pre-wrap}.answer{white-space:pre-wrap;background:#f6f8fb;border-radius:10px;padding:12px;margin-top:10px}
+.hidden{display:none!important}.status{margin-top:10px;font-size:14px}.good{color:var(--green)}.bad{color:var(--red)}.progress{height:8px;background:#e9edf5;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue);width:0}
+details{margin-top:10px}summary{cursor:pointer;font-weight:650}.smallbtn{padding:8px 11px;font-size:14px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:0 12px 22px}
+@media(min-width:760px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}}
+
+/* JARVIS-inspired interface */
+:root{--bg:#07111e;--card:#0d1b2a;--ink:#e7f6ff;--muted:#93a9bd;--line:#20394d;--blue:#00c8e8;--blue2:#10394a;--green:#59e2ae;--red:#ff9b86}
+body{background:radial-gradient(ellipse at 50% -20%,#12374e 0%,#07111e 57%);color:var(--ink)}
+header{background:linear-gradient(115deg,#07121f,#102c42 55%,#07121f);border-bottom:1px solid #1c5267;box-shadow:0 10px 35px #00c8e814;position:relative;overflow:hidden}
+header:after{content:"";position:absolute;right:-70px;top:-130px;width:330px;height:330px;border:1px solid #00c8e82a;border-radius:50%;box-shadow:0 0 0 24px #00c8e80a,0 0 0 52px #00c8e807;pointer-events:none}
+header h1{letter-spacing:.04em;text-shadow:0 0 18px #00c8e852}header p{color:#b6d0df}
+.card{background:linear-gradient(145deg,#0d1e2e,#0a1725);border-color:#1d3b50;box-shadow:0 8px 30px #00000025,inset 0 1px #ffffff05}
+h2{color:#d8f8ff}.muted{color:#9bb2c4}button{background:linear-gradient(135deg,#00b9dc,#087da8);color:#02131d;box-shadow:0 0 16px #00c8e81a}button.secondary{background:#12394b;color:#a9f4ff;border:1px solid #1c6377}button.ghost{background:#172637;color:#c0d3e2;border:1px solid #294054}button:hover{filter:brightness(1.12)}
+textarea,input[type=text],select{background:#071522!important;color:#e7f6ff!important;border-color:#29475c!important}textarea::placeholder{color:#6f879a}.pill{background:#132b3d;color:#b9d8e7;border:1px solid #254358}.qbox{background:#081827;border-color:#204256}.question{color:#e4fbff;text-shadow:0 0 12px #00c8e81b}.answer{background:#11283a;color:#cce5f2}.progress{background:#183044}.progress span{background:linear-gradient(90deg,#00a9d0,#5deaff);box-shadow:0 0 12px #00d8ff80}.good{color:#64edb9}.bad{color:#ffab92}footer{color:#819aaf}
+.voice-note{margin-top:9px;padding:10px 12px;border:1px solid #23485a;border-radius:11px;background:#081827;color:#9bb6c9;font-size:13px}
+.assistant-status{display:inline-flex;align-items:center;gap:8px;margin-top:12px;color:#7cf1ff;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.assistant-status:before{content:"";width:8px;height:8px;border-radius:50%;background:#53efbd;box-shadow:0 0 12px #53efbd}
+@media(min-width:760px){header:after{right:5%;top:-160px}}
+
+/* Animated human-like JARVIS hologram */
+.holo-stage{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:clamp(18px,4vw,46px);padding:20px 24px;min-height:320px;position:relative;overflow:hidden;border:1px solid #1a5267;border-radius:20px;background:radial-gradient(ellipse at 38% 48%,#0b3446 0%,#081b2a 45%,#06111e 100%);box-shadow:inset 0 0 50px #00c8e811,0 12px 36px #0005}
+.holo-stage:before,.holo-stage:after{content:"";position:absolute;border:1px solid #31eaff22;border-radius:50%;width:280px;height:280px;left:calc(50% - 140px);top:20px;animation:orbit 22s linear infinite;pointer-events:none}
+.holo-stage:after{width:330px;height:330px;left:calc(50% - 165px);top:-5px;border-style:dashed;animation-direction:reverse;animation-duration:35s}
+.avatar-visual{width:min(42vw,255px);min-width:190px;position:relative;z-index:1;filter:drop-shadow(0 0 18px #00d9ff2b);animation:floatHuman 4.5s ease-in-out infinite}
+.avatar-svg{display:block;width:100%;height:auto;overflow:visible}
+.avatar-halo{position:absolute;inset:12% 8% 7%;border:1px solid #54edff35;border-radius:50%;transform:scaleX(.78);box-shadow:0 0 30px #00bde51a,inset 0 0 24px #00bde51a;animation:haloPulse 3.4s ease-in-out infinite;pointer-events:none}
+.avatar-scan{position:absolute;left:8%;right:8%;height:2px;top:29%;background:linear-gradient(90deg,transparent,#69f5ff,transparent);box-shadow:0 0 12px #24e7ff;opacity:.65;animation:scanFace 4.8s linear infinite;pointer-events:none}
+.avatar-copy{position:relative;z-index:1;max-width:370px;flex:1}
+.avatar-label{font-size:12px;letter-spacing:.2em;color:#50eaff;font-weight:800}
+.avatar-copy h2{font-size:clamp(24px,3vw,36px);letter-spacing:.04em;margin:7px 0;color:#ecfbff;text-shadow:0 0 20px #20dfff38}
+.avatar-copy p{color:#9cbccc;margin:0 0 14px}
+.avatar-live{display:inline-flex;align-items:center;gap:9px;border:1px solid #1e5a6b;border-radius:99px;background:#071a28;padding:8px 12px;color:#a8f6ff;font-size:12px;letter-spacing:.08em}
+.avatar-live i{width:7px;height:7px;border-radius:50%;background:#49edb7;box-shadow:0 0 10px #49edb7;display:inline-block}
+.avatar-svg .head{transform-origin:130px 137px;animation:headTilt 8s ease-in-out infinite}
+.avatar-svg .torso{transform-origin:130px 280px;animation:breathe 4s ease-in-out infinite}
+.avatar-svg .hair-back{fill:#102c43;stroke:#34cfe9;stroke-width:1.2}
+.avatar-svg .skin{fill:url(#skinTone);stroke:#73eaff;stroke-width:1.6}
+.avatar-svg .hair-front{fill:#0a2034;stroke:#42dff6;stroke-width:1.4}
+.avatar-svg .eye-white{fill:#bafaff}
+.avatar-svg .pupil{fill:#06334a;filter:drop-shadow(0 0 3px #7af6ff)}
+.avatar-svg .eyelid{fill:#163e52;transform-box:fill-box;transform-origin:center;animation:blinkHuman 5.2s infinite}
+.avatar-svg .mouth-open{opacity:0;transform-origin:130px 190px}
+.avatar-svg .mouth-closed{opacity:1}
+.holo-stage.is-talking .avatar-svg .mouth-open{opacity:1;animation:talkMouth .19s ease-in-out infinite alternate}
+.holo-stage.is-talking .avatar-svg .mouth-closed{opacity:0}
+.holo-stage.is-talking .avatar-scan{animation-duration:1.1s;opacity:.9}
+.holo-stage.is-talking .avatar-live i{background:#55eaff;box-shadow:0 0 14px #55eaff;animation:statusPulse .45s infinite alternate}
+.holo-stage.is-listening .avatar-halo{border-color:#56f3b9;box-shadow:0 0 32px #39f9b044,inset 0 0 25px #39f9b020}
+.holo-stage.is-listening .avatar-live i{background:#56f3b9;box-shadow:0 0 15px #56f3b9;animation:statusPulse .7s infinite alternate}
+.holo-stage.is-listening .avatar-scan{background:linear-gradient(90deg,transparent,#56f3b9,transparent);animation-duration:1.8s}
+@keyframes floatHuman{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(2px) scale(1.008)}}
+@keyframes headTilt{0%,42%,100%{transform:rotate(0)}50%,58%{transform:rotate(1.2deg)}80%{transform:rotate(-.7deg)}}
+@keyframes blinkHuman{0%,44%,48%,80%,84%,100%{transform:scaleY(1)}46%,82%{transform:scaleY(.08)}}
+@keyframes talkMouth{from{transform:scaleY(.55) scaleX(.85)}to{transform:scaleY(1.25) scaleX(1.04)}}
+@keyframes haloPulse{0%,100%{opacity:.45;transform:scaleX(.78) scale(.98)}50%{opacity:.9;transform:scaleX(.78) scale(1.03)}}
+@keyframes scanFace{0%{top:19%;opacity:0}12%{opacity:.7}90%{opacity:.6}100%{top:72%;opacity:0}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes statusPulse{to{opacity:.45;transform:scale(.82)}}
+@media(max-width:620px){.holo-stage{flex-direction:column;gap:3px;padding:14px 16px;text-align:center}.avatar-visual{width:215px;max-width:72vw}.avatar-copy{flex:auto}.avatar-copy p{font-size:14px}.avatar-copy h2{margin:3px 0 6px}.avatar-live{margin-bottom:5px}}
+@media(prefers-reduced-motion:reduce){.avatar-visual,.holo-stage:before,.holo-stage:after,.avatar-svg *, .avatar-halo,.avatar-scan{animation-duration:0.01ms!important;animation-iteration-count:1!important}}
+
+.conversation-card{grid-column:1/-1}
+.conversation-log{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow:auto;padding:12px;border:1px solid #204256;border-radius:14px;background:#06131f;margin-top:12px;scroll-behavior:smooth}
+.chat-msg{max-width:min(88%,700px);padding:11px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}
+.chat-msg.jarvis{align-self:flex-start;background:#103144;border:1px solid #1b6176;color:#d9f9ff;border-bottom-left-radius:4px}
+.chat-msg.user{align-self:flex-end;background:#123b33;border:1px solid #286852;color:#dcfff0;border-bottom-right-radius:4px}
+.chat-who{font-size:10px;letter-spacing:.12em;font-weight:800;opacity:.7;display:block;margin-bottom:3px}
+.live-hint{font-size:13px;color:#9bbccc;margin:8px 0 0}
+@media(max-width:620px){.chat-msg{max-width:96%}}
+
+
+
+/* Mobile-first refinements */
+html{min-height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{min-height:100dvh;padding-bottom:env(safe-area-inset-bottom);overscroll-behavior-y:contain}
+button,.filelabel,select,input,textarea{touch-action:manipulation}
+button,.filelabel{min-height:46px}
+main{width:100%;padding:14px 12px calc(28px + env(safe-area-inset-bottom));gap:12px}
+.card{min-width:0;padding:16px;border-radius:16px}
+.row{gap:8px}
+.row>button{flex:1 1 140px;max-width:100%}
+.holo-stage{min-width:0}
+.conversation-card{min-width:0}
+.conversation-log{max-height:32dvh;max-height:32vh;overscroll-behavior:contain}
+.chat-msg{max-width:96%;font-size:14px}
+.question{font-size:clamp(18px,5vw,22px);line-height:1.4;overflow-wrap:anywhere}
+textarea{font-size:16px;min-height:100px}
+select,input[type=text]{min-height:44px;font-size:16px}
+#file{width:100%;min-width:0;font-size:14px}
+@media(max-width:620px){
+ header{padding:18px 15px}
+ header .wrap{width:100%}
+ header h1{font-size:25px}
+ header p{font-size:14px;max-width:38ch}
+ main{grid-template-columns:minmax(0,1fr);}
+ .wide,.conversation-card,.holo-stage{grid-column:1}
+ .card{padding:14px}
+ h2{font-size:18px}
+ .holo-stage{min-height:unset;gap:0;padding:12px 10px}
+ .avatar-visual{width:min(60vw,210px);min-width:145px}
+ .avatar-copy h2{font-size:24px}
+ .avatar-copy p{font-size:13px}
+ .conversation-log{max-height:34vh;padding:8px}
+ .row>button{flex:1 1 100%;width:100%}
+ #testVoice,#start,#liveConversation,#stop{flex-basis:100%}
+ .stats{gap:6px}
+ .pill{font-size:12px}
+ footer{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+}
+@media(min-width:621px) and (max-width:900px){main{grid-template-columns:minmax(0,1fr)}.wide,.conversation-card,.holo-stage{grid-column:1}}
+@media(pointer:coarse){button{padding:13px 14px}}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+<header><div class="wrap"><h1>◉ SUHBAT USTOZI</h1><p>SOLIQ-SERVIS · INTELLEKTUAL SUHBAT TRENAJYORI</p><div class="assistant-status">JARVIS MODE · MICROSOFT TABIIY OVOZ</div></div></header>
+<main>
+
+<section id="holoStage" class="holo-stage wide" aria-label="Animatsiyali JARVIS yordamchisi">
+  <div class="avatar-visual" aria-hidden="true">
+    <div class="avatar-halo"></div><div class="avatar-scan"></div>
+    <svg class="avatar-svg" viewBox="0 0 260 350" role="img" aria-label="Ko‘k hologram ko‘rinishidagi animatsiyali odam">
+      <defs>
+        <linearGradient id="skinTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b7faff"/><stop offset=".45" stop-color="#65cce1"/><stop offset="1" stop-color="#27799e"/></linearGradient>
+        <linearGradient id="coatTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#164762"/><stop offset=".5" stop-color="#0b273d"/><stop offset="1" stop-color="#071827"/></linearGradient>
+        <linearGradient id="hairTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#24445c"/><stop offset="1" stop-color="#061725"/></linearGradient>
+        <radialGradient id="faceGlow"><stop offset="0" stop-color="#9bf7ff" stop-opacity=".22"/><stop offset="1" stop-color="#2be3ff" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="130" cy="322" rx="82" ry="13" fill="#0acdeb" opacity=".16"/>
+      <g class="torso">
+        <path d="M87 234 Q61 245 47 274 L28 326 Q78 344 130 344 Q182 344 232 326 L213 274 Q199 245 173 234 L155 226 L105 226Z" fill="url(#coatTone)" stroke="#45dff7" stroke-width="1.8"/>
+        <path d="M105 226 L112 250 L130 274 L148 250 L155 226" fill="#0c3148" stroke="#4fdcf0" stroke-width="1.3"/>
+        <path d="M112 250 L130 274 L123 316 L130 331 L137 316 L130 274 L148 250" fill="#1e849e" opacity=".8"/>
+        <path d="M57 286 Q130 304 203 286" fill="none" stroke="#29c6e3" stroke-width="1" opacity=".6"/>
+        <path d="M74 309 Q130 326 186 309" fill="none" stroke="#29c6e3" stroke-width="1" opacity=".45"/>
+        <circle cx="130" cy="295" r="3" fill="#8cfcff"><animate attributeName="opacity" values=".35;1;.35" dur="2s" repeatCount="indefinite"/></circle>
+      </g>
+      <path d="M108 207 L108 239 Q130 257 152 239 L152 207Z" fill="url(#skinTone)" stroke="#62e9fa" stroke-width="1.4"/>
+      <path d="M75 95 Q64 62 91 45 Q111 26 146 36 Q185 43 188 87 L181 158 Q175 197 146 219 Q130 231 111 216 Q80 194 75 151Z" class="hair-back"/>
+      <g class="head">
+        <ellipse cx="72" cy="143" rx="10" ry="18" class="skin"/><ellipse cx="188" cy="143" rx="10" ry="18" class="skin"/>
+        <path d="M81 98 Q82 65 111 57 Q144 48 168 68 Q183 82 180 120 L175 167 Q169 198 146 214 Q130 225 114 212 Q90 195 84 165Z" class="skin"/>
+        <ellipse cx="130" cy="142" rx="60" ry="83" fill="url(#faceGlow)"/>
+        <path d="M87 121 Q102 111 117 120" fill="none" stroke="#174961" stroke-width="4" stroke-linecap="round"/>
+        <path d="M143 120 Q158 111 173 121" fill="none" stroke="#174961" stroke-width="4" stroke-linecap="round"/>
+        <g class="eye">
+          <path d="M91 135 Q103 125 116 135 Q104 146 91 135Z" class="eye-white"/>
+          <ellipse cx="104" cy="135" rx="4.2" ry="5.3" class="pupil"/><circle cx="105.5" cy="133" r="1.5" fill="#fff"/>
+          <ellipse cx="104" cy="135" rx="13" ry="11" class="eyelid"/>
+        </g>
+        <g class="eye">
+          <path d="M144 135 Q157 125 169 135 Q157 146 144 135Z" class="eye-white"/>
+          <ellipse cx="156" cy="135" rx="4.2" ry="5.3" class="pupil"/><circle cx="157.5" cy="133" r="1.5" fill="#fff"/>
+          <ellipse cx="156" cy="135" rx="13" ry="11" class="eyelid" style="animation-delay:.08s"/>
+        </g>
+        <path d="M130 137 Q125 157 131 164 Q135 168 141 163" fill="none" stroke="#27738d" stroke-width="2" stroke-linecap="round"/>
+        <path d="M112 181 Q130 188 148 181" class="mouth-closed" fill="none" stroke="#10445a" stroke-width="3.2" stroke-linecap="round"/>
+        <ellipse cx="130" cy="184" rx="12" ry="5" fill="#092738" class="mouth-open"/>
+        <path d="M120 184 Q130 187 140 184" fill="none" stroke="#67eaff" stroke-width="1.2" class="mouth-open"/>
+        <path d="M91 163 Q98 169 105 167 M155 167 Q162 169 169 163" fill="none" stroke="#9ff5fc" stroke-width="1.1" opacity=".42"/>
+        <path d="M79 118 Q70 82 93 61 Q119 35 151 51 Q179 62 184 91 L176 100 Q165 77 145 75 Q117 78 101 98 L95 118 L90 91 Q85 106 79 118Z" fill="url(#hairTone)" stroke="#36cfe9" stroke-width="1.5"/>
+        <path d="M83 94 Q94 60 123 56 Q145 50 166 68" fill="none" stroke="#7af1ff" stroke-width="1.3" opacity=".6"/>
+        <path d="M77 127 Q72 154 88 180" fill="none" stroke="#67eaff" stroke-width="1.1" opacity=".5"/>
+        <circle cx="78" cy="144" r="3" fill="#83f8ff"/><circle cx="182" cy="144" r="3" fill="#83f8ff"/>
+      </g>
+      <path d="M47 277 L62 262 M213 277 L198 262" stroke="#40dbf1" stroke-width="1.2" opacity=".7"/>
+      <path d="M18 320 L48 320 M212 320 L242 320" stroke="#55eaff" stroke-width="1.3" opacity=".55"/>
+    </svg>
+  </div>
+  <div class="avatar-copy"><div class="avatar-label">HOLOGRAPHIC INTERFACE · AI ASSISTANT</div><h2>J.A.R.V.I.S.</h2><p>Salom. Men sening suhbat yordamchingman. Savollarni beraman, javobingni tinglayman va tayyorgarligingni baholashga yordam beraman.</p><div class="avatar-live"><i></i><span id="avatarStatusText">TIZIM TAYYOR · SIZNI KUTYAPMAN</span></div></div>
+</section>
+
+<section class="card wide">
+<h2>1. Savol-javob faylini yuklash</h2>
+<p class="muted">PDF yoki Word (.docx) fayl tanlang. Dastur matndan savol va javoblarni ajratishga urinadi. Faylingiz skaner qilingan rasm bo‘lsa, matnni quyidagi maydonga nusxalash kerak bo‘lishi mumkin.</p>
+<div class="row"><input id="file" type="file" accept=".pdf,.docx,.txt"><button id="load" type="button">Faylni o‘qish</button></div>
+<div id="fileStatus" class="status muted" aria-live="polite"></div>
+<label for="raw" class="muted">Yoki savol-javob matnini shu yerga joylang/tahrirlang:</label>
+<textarea id="raw" placeholder="Masalan:&#10;1. Savol: O‘zingiz haqingizda gapirib bering.&#10;Javob: Men ...&#10;&#10;2. Savol: Nima uchun bu lavozimni tanladingiz?&#10;Javob: ..."></textarea>
+<div class="row" style="margin-top:10px"><button id="parse">Savollarni ajratish</button><button id="sample" class="secondary">Namuna qo‘shish</button><button id="clear" class="ghost">Tozalash</button></div>
+<div class="row" style="margin-top:10px"><button id="loadBank" class="secondary">📚 Savollarni qayta yuklash (240 ta)</button></div>
+<div id="parseStatus" class="status muted"></div>
+<div id="stats" class="stats"></div>
+</section>
+<section class="card">
+<h2>2. Imtihon sozlamalari</h2>
+<p class="muted">Savol ekranda ko‘rinadi va ovozli o‘qilishi mumkin. Javobni yozing yoki mikrofon orqali ayting.</p>
+<label for="category" class="muted">Savollar bo‘limi</label>
+<select id="category" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 12px;font:inherit">
+<option value="all">Barchasi — 240 ta savol</option><option value="accounting">Buxgalteriya hisobi — 100 ta</option><option value="tax">Soliq qonunchiligi — 100 ta</option><option value="pf100">PF–100-son Farmon — 40 ta qo‘shimcha savol</option>
+</select>
+<label for="mode" class="muted">Mashq turi</label>
+<select id="mode" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 12px;font:inherit">
+<option value="all">Barcha savollar tartib bilan</option><option value="random">Tasodifiy savollar</option><option value="weak">Xato qilingan savollarni qaytarish</option>
+</select>
+<label for="lang" class="muted">Ovoz / nutq tili</label>
+<select id="lang" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 12px;font:inherit">
+<option value="uz-UZ">O‘zbekcha (brauzer qo‘llasa)</option><option value="ru-RU">Ruscha</option><option value="en-US">Inglizcha</option>
+</select>
+<label for="voiceChoice" class="muted">Tabiiy ovoz (kompyuterda mavjud ovozlar)</label>
+<select id="voiceChoice" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 8px;font:inherit"><option value="edge-sardor" selected>Microsoft tabiiy o‘zbekcha — Sardor (erkak, onlayn)</option><option value="edge-madina">Microsoft tabiiy o‘zbekcha — Madina (ayol, onlayn)</option><option value="auto">Brauzer ovozi — avtomatik tanlash</option></select>
+<div class="row"><button id="testVoice" class="secondary">▶ Ovoz namunasini eshitish</button><button id="start">Matnli/oddiy imtihon</button><button id="liveConversation">🗣️ JARVIS bilan jonli suhbat</button><button id="stop" class="ghost">Suhbatni to‘xtatish</button></div><p class="live-hint">Jonli rejim: savolni tinglang va gapiring. Javobdan keyin 10 soniya sukut bo‘lsa, JARVIS “To‘g‘ri” yoki “Noto‘g‘ri” deydi. Keyingi savol avvalgi ovoz tugagandan keyin boshlanadi. Mikrofon ruxsati kerak.</p>
+<div id="voiceStatus" class="voice-note" aria-live="polite">Mavjud ovozlar aniqlanmoqda...</div>
+<p class="muted">Sardor va Madina — Microsoft’ning tabiiy o‘zbekcha onlayn ovozlari. Ulardan foydalanish uchun internet hamda Start_JARVIS.bat orqali ishga tushirilgan mahalliy ovoz xizmati kerak. Jonli mashqda yordamchi faqat kerakli gapni aytadi, javobning to‘liq namunasi ekranda qoladi. Onlayn xizmat ulanmasa, robot ovoziga avtomatik o‘tmaydi; ulanish xabarini ko‘rsatadi.</p>
+</section>
+<section class="card">
+<h2>3. Hozirgi savol</h2>
+<div class="progress"><span id="bar"></span></div>
+<div id="examEmpty" class="muted" style="margin-top:12px">PDFdagi savollar tayyor: avval dasturdagi savollar tayyorligini tekshiring, bo‘limni tanlang va imtihonni boshlang.</div>
+<div id="exam" class="hidden">
+<div class="stats"><span class="pill" id="counter"></span><span class="pill" id="score"></span></div>
+<div class="qbox"><div class="qnum">SAVOL</div><div id="question" class="question"></div>
+<div class="row"><button id="speak" class="secondary smallbtn">🔊 Savolni o‘qish</button><button id="mic" class="secondary smallbtn">🎤 Gapirib javob berish</button></div>
+<div id="micStatus" class="status muted"></div>
+</div>
+<div id="conversationLog" class="conversation-log" aria-live="polite"><div class="chat-msg jarvis"><span class="chat-who">J.A.R.V.I.S.</span>Jonli suhbatni boshlash uchun yuqoridagi tugmani bosing.</div></div>
+<label for="userAnswer" class="muted">Javobingiz</label><textarea id="userAnswer" placeholder="Javobingizni yozing yoki mikrofon orqali ayting..."></textarea>
+<div class="row" style="margin-top:10px"><button id="check">Javobni tekshirish</button><button id="showAnswer" class="secondary">Namunaviy javob</button><button id="next" class="ghost">Keyingi savol →</button></div>
+<div id="feedback" class="status" aria-live="polite"></div>
+<div id="modelAnswer" class="answer hidden"></div>
+</div>
+</section>
+<section class="card">
+<h2>4. Natijalar</h2>
+<div class="stats"><span class="pill" id="doneCount">Javob berilgan: 0</span><span class="pill" id="correctCount">Yaxshi javob: 0</span><span class="pill" id="weakCount">Qaytarish kerak: 0</span></div>
+<p class="muted">Javoblar so‘zma-so‘z emas, asosiy tushunchalar, yaqin ma’noli so‘zlar va gap mazmuniga yaqinlik bo‘yicha taxminiy tekshiriladi. Bu mahalliy tekshiruv haqiqiy AI semantik tahlilining o‘rnini to‘liq bosa olmaydi.</p>
+<button id="review" class="secondary">Xato savollarni ko‘rish</button>
+<div id="reviewList"></div>
+</section>
+</main>
+<footer>Ma’lumotlar shu brauzer sahifasida ishlanadi. Fayl serverga yuklanmaydi. Sahifani yopishdan oldin asl faylingizni saqlab qo‘ying.</footer>
+<script>window.JARVIS_ACCESS_TOKEN = __JARVIS_ACCESS_TOKEN_JSON__;</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+let items=[], order=[], pos=0, results={}, recognition=null, listening=false, availableVoices=[], conversationMode=false, listenRetry=0, recognitionError="", conversationSerial=0;
+let currentAudio=null, currentAudioUrl=null, speechSerial=0, ttsAbort=null;
+const embeddedBank = [{"q":"Бухгалтерия ҳисоби нима?","a":"Бухгалтерия ҳисоби - корхонанинг мол-мулки, маблағлари, мажбуриятлари, даромадлари, харажатлари ва хўжалик операциялари тўғрисидаги маълумотларни ҳужжатлар асосида йиғиш, қайд этиш ва умумлаштириш тизимидир."},{"q":"Бухгалтерия ҳисобининг асосий вазифалари нималардан иборат?","a":"Корхонанинг молиявий ҳолатини ҳисобга олиш, маблағлар ҳаракатини назорат қилиш, даромад ва харажатларни аниқлаш ҳамда ишончли молиявий ҳисоботларни тайёрлаш."},{"q":"Бухгалтерия ҳисобини юритишдан асосий мақсад нима?","a":"Корхона раҳбарияти, мулкдорлар ва бошқа манфаатдор фойдаланувчиларни тўғри, тўлиқ ва ишончли молиявий маълумотлар билан таъминлаш."},{"q":"Бухгалтерия ҳисобининг қандай турлари мавжуд?","a":"Бухгалтерия ҳисоби асосан молиявий ҳисоб ва бошқарув ҳисобига ажратилади. Солиқ ҳисоби эса солиқ мажбуриятларини аниқлаш учун алоҳида юритиладиган ҳисоб тизимидир."},{"q":"Бухгалтерия ҳисоби билан солиқ ҳисобининг фарқи нимада?","a":"Бухгалтерия ҳисоби корхонанинг молиявий ҳолати ва фаолият натижаларини акс эттиради. Солиқ ҳисоби эса солиқ солиш базасини аниқлаш, солиқларни ҳисоблаш ва солиқ ҳисоботларини тайёрлаш учун юритилади."},{"q":"Бухгалтерия ҳисобида актив деганда нима тушунилади?","a":"Актив — корхона назоратидаги, келгусида иқтисодий наф келтириши кутиладиган ресурс. Масалан, пул маблағлари, бино, компьютер, товар ва материаллар."},{"q":"Бухгалтерия ҳисобида мажбурият деганда нима тушунилади?","a":"Мажбурият — корхонанинг бошқа шахслар ёки ташкилотлар олдидаги мавжуд қарзи ёки бажарилиши лозим бўлган мажбурияти. Масалан, банк кредити, етказиб берувчилардан қарз ва ҳисобланган иш ҳақи."},{"q":"Корхонанинг хусусий капитали нима?","a":"Хусусий капитал — корхона активларидан унинг мажбуриятлари чегирилгандан кейин қоладиган қиймат. Формула: Хусусий капитал = Активлар − Мажбуриятлар."},{"q":"Корхонанинг даромади ва харажати деганда нима тушунилади?","a":"Даромад — корхонанинг иқтисодий нафини оширувчи тушум ёки бошқа кўпайишлар. Харажат — фаолиятни амалга ошириш натижасида иқтисодий нафнинг камайиши."},{"q":"Корхонанинг фойдаси ёки зарари қандай аниқланади?","a":"Тегишли даврда тан олинган даромадлардан харажатлар айирилади. Даромад харажатдан кўп бўлса — фойда, кам бўлса — зарар юзага келади. Формула: Молиявий натижа = Даромадлар − Харажатлар."},{"q":"Бухгалтерия баланси нима?","a":"Бухгалтерия баланси — корхонанинг муайян санадаги активлари, мажбуриятлари ва хусусий капиталини акс эттирувчи молиявий ҳисобот."},{"q":"Бухгалтерия баланси қандай асосий қисмлардан иборат?","a":"Баланс икки асосий қисмдан иборат: актив ва пассив. Активда корхона ресурслари, пассивда эса хусусий капитал ва мажбуриятлар кўрсатилади."},{"q":"Баланснинг актив қисмида нималар акс эттирилади?","a":"Асосий воситалар, товар-моддий захиралар, пул маблағлари, дебиторлик қарзлари ва бошқа активлар."},{"q":"Баланснинг пассив қисмида нималар акс эттирилади?","a":"Устав капитали, бошқа хусусий капитал таркибий қисмлари, кредитлар, кредиторлик қарзлари ва бошқа мажбуриятлар."},{"q":"Нима учун баланснинг актив ва пассив қисмлари тенг бўлиши керак?","a":"Чунки ҳар бир активнинг шаклланиш манбаи мавжуд. Активлар хусусий капитал ёки мажбуриятлар ҳисобидан шаклланади. Формула: Активлар = Хусусий капитал + Мажбуриятлар."},{"q":"Узоқ муддатли активларга нималар киради?","a":"Одатда бир йилдан ортиқ муддат фойдаланиш учун мўлжалланган асосий воситалар, номоддий активлар, узоқ муддатли инвестициялар ва бошқа активлар."},{"q":"Жорий активларга нималар киради?","a":"Пул маблағлари, қисқа муддатли дебиторлик қарзлари, товар-моддий захиралар ва одатда бир йил ёки операцион цикл давомида пулга айлантириладиган бошқа активлар."},{"q":"Дебиторлик қарзи нима?","a":"Дебиторлик қарзи — бошқа шахслар ёки ташкилотларнинг корхонага тўлаши лозим бўлган қарзи. Масалан, харидор товарни олган, лекин пулини ҳали тўламаган."},{"q":"Кредиторлик қарзи нима?","a":"Кредиторлик қарзи — корхонанинг бошқа шахслар ёки ташкилотлар олдидаги қарзи. Масалан, корхона товарни олган, лекин етказиб берувчига ҳали пул тўламаган."},{"q":"Корхона банкдан кредит олса, бу операция балансга қандай таъсир қилади?","a":"Банк ҳисобварағидаги пул маблағлари кўпаяди, шу билан бирга банк олдидаги мажбурият ҳам ошади. Баланс тенглиги сақланади."},{"q":"Бухгалтерия ҳисобида дебет нима?","a":"Дебет — бухгалтерия ҳисобварағининг чап томони. Актив ҳисобварақларда кўпайиш, пассив ҳисобварақларда эса камайиш одатда дебетда акс эттирилади."},{"q":"Бухгалтерия ҳисобида кредит нима?","a":"Кредит — бухгалтерия ҳисобварағининг ўнг томони. Пассив ҳисобварақларда кўпайиш, актив ҳисобварақларда эса камайиш одатда кредитда акс эттирилади."},{"q":"Икки ёқлама ёзув усули деганда нима тушунилади?","a":"Ҳар бир хўжалик операциясини бир ҳисобварақнинг дебетида ва бошқа ҳисобварақнинг кредитида бир хил суммада акс эттириш усули."},{"q":"Бухгалтерия ўтказмаси (проводка) нима?","a":"Хўжалик операциясини тегишли ҳисобварақларнинг дебети ва кредитида акс эттириш ёзуви. Масалан, банкдан кассага 1 000 000 сўм олинганда: Дт 5010 — Кт 5110."},{"q":"Актив ҳисобварақларда маблағларнинг кўпайиши қайси томонда акс эттирилади?","a":"Дебет томонида."},{"q":"Пассив ҳисобварақларда мажбуриятларнинг кўпайиши қайси томонда акс эттирилади?","a":"Кредит томонида."},{"q":"Ҳисобварақнинг қолдиғи (сальдо) нима?","a":"Сальдо - ҳисобварақда муайян санага мавжуд қолдиқ. У бошланғич қолдиқ ва давр мобайнидаги дебет ҳамда кредит айланмалари асосида аниқланади."},{"q":"Ҳисобварақлар режаси нима учун керак?","a":"Корхона активлари, мажбуриятлари, капитали, даромадлари ва харажатларини ягона тизим асосида гуруҳлаш ҳамда ҳисобга олиш учун керак."},{"q":"Корхона кассасига банк ҳисобварағидан нақд пул олинса, қандай бухгалтерия ўтказмаси берилади?","a":"• Дебет 5010 — «Миллий валютадаги пул маблағлари». • Кредит 5110 — «Ҳисоб-китоб ҳисобварағи». Бунда кассадаги пул кўпаяди, банкдаги пул камаяди."},{"q":"Корхона етказиб берувчидан товарни кейин тўлаш шарти билан олса, қандай бухгалтерия ўтказмаси берилади?","a":"• Дебет 2910 — «Омбордаги товарлар». • Кредит 6010 — «Мол етказиб берувчилар ва пудратчиларга тўловлар». Бунда товар захираси ва етказиб берувчи олдидаги қарз кўпаяди. ҚҚС мавжуд бўлса, у тегишли тартибда алоҳида ҳисобга олинади."},{"q":"Бошланғич ҳисоб ҳужжати нима?","a":"Хўжалик операцияси амалга оширилганлигини тасдиқловчи ва уни бухгалтерия ҳисобида акс эттириш учун асос бўладиган ҳужжат."},{"q":"Бошланғич ҳисоб ҳужжатларига қандай мисоллар келтириш мумкин?","a":"Ҳисобварақ-фактура, қабул қилиш-топшириш далолатномаси, касса кирим ва чиқим ордерлари, юк хати, иш ҳақи ҳисоблаш қайдномаси ва бошқа ҳужжатлар."},{"q":"Ҳисобварақ-фактура нима ва у қандай мақсадда расмийлаштирилади?","a":"Ҳисобварақ-фактура — товарлар, ишлар ёки хизматлар реализациясини тегишли қонунчилик талабларига мувофиқ расмийлаштирувчи ҳужжат. У солиқ ва бухгалтерия ҳисобида операцияни тасдиқлашга хизмат қилади."},{"q":"Электрон ҳисобварақ-фактура нима?","a":"Электрон ҳисобварақ-фактура — белгиланган электрон ахборот тизими орқали тузиладиган, юбориладиган ва қабул қилинадиган ҳисобварақ-фактура."},{"q":"Бажарилган ишлар ёки кўрсатилган хизматлар далолатномаси нима учун тузилади?","a":"Ишлар бажарилгани ёки хизматлар кўрсатилганини, уларнинг ҳажми ва қийматини тасдиқлаш учун тузилади."},{"q":"Товарларни қабул қилиш ва топшириш қандай ҳужжатлар билан расмийлаштирилади?","a":"Товарларни топшириш ва қабул қилиш юк хати, ҳисобварақ-фактура, қабул қилиш-топшириш далолатномаси ёки операция хусусиятига мувофиқ бошқа белгиланган ҳужжатлар билан расмийлаштирилади."},{"q":"Шартнома бухгалтерия ҳисобида қандай аҳамиятга эга?","a":"Шартнома томонларнинг ҳуқуқ ва мажбуриятларини, товар ёки хизмат қийматини, тўлов шартларини белгилайди. Бухгалтер ушбу шартларни операцияни тасдиқловчи бошланғич ҳужжатлар билан биргаликда текширади."},{"q":"Бошланғич ҳисоб ҳужжатида қандай асосий реквизитлар бўлиши керак?","a":"Ташкилот номи, ҳужжат номи ва рақами, тузилган сана ва жой, операциянинг мазмуни ва миқдорий ўлчови, масъул шахсларни аниқлаш имконини берувчи реквизитлар ҳамда имзолар."},{"q":"Ҳужжатда хато аниқланса, бухгалтер қандай ҳаракат қилиши керак?","a":"Хатонинг хусусиятини аниқлаб, ҳужжатни тузган масъул шахсга хабар беради. Хато қонунчиликда белгиланган тартибда тузатилади ёки ҳужжат қайта расмийлаштирилади. Ҳар қандай ҳужжатга ўзбошимчалик билан ўзгартириш киритиш мумкин эмас."},{"q":"Бухгалтерия ҳужжатларини сақлаш ва архивлаш нима учун зарур?","a":"Операцияларни тасдиқлаш, ҳисоботларни текшириш ва назоратни таъминлаш учун зарур. Бухгалтерия ҳужжатлари қонунчиликда белгиланган муддатларда, ҳисобот йилидан кейин камида 5 йил сақланиши керак; айрим ҳужжатлар учун узоқроқ муддат белгиланиши мумкин."},{"q":"Корхона кассаси нима?","a":"Корхонанинг нақд пул маблағлари сақланадиган ва улар бўйича кирим-чиқим операциялари ҳисобга олинадиган жойи ёки ҳисоб юритиш соҳаси."},{"q":"Касса кирим ордери қандай ҳолатларда расмийлаштирилади?","a":"Кассага нақд пул келиб тушганда, тегишли касса операциясини расмийлаштириш учун тузилади."},{"q":"Касса чиқим ордери қандай ҳолатларда расмийлаштирилади?","a":"Кассадан нақд пул берилганда, масалан, ҳисобдор шахсга маблағ ажратилганда ёки бошқа рухсат этилган тўлов амалга оширилганда тузилади."},{"q":"Касса китоби нима ва унда қандай маълумотлар акс эттирилади?","a":"Касса китоби — нақд пул кирими, чиқими ва кунлик қолдиғи ҳисобга олинадиган ҳужжат ёки регистр."},{"q":"Кассадаги нақд пул қолдиғи қандай аниқланади?","a":"Кун бошидаги пул қолдиғига кун давомида келиб тушган пул қўшилади ва сарфланган пул айирилади. Қолдиқ = Бошланғич қолдиқ + Кирим − Чиқим."},{"q":"Корхонанинг банк ҳисобварағи нима учун керак?","a":"Пул маблағларини банкда сақлаш, тўловларни амалга ошириш, харидорлардан пул қабул қилиш, солиқлар ва бошқа мажбуриятларни тўлаш учун керак."},{"q":"Банк кўчирмаси нима?","a":"Банк кўчирмаси — маълум даврда корхонанинг банк ҳисобварағи бўйича амалга оширилган кирим-чиқим операциялари ва пул қолдиғини кўрсатувчи ҳужжат."},{"q":"Тўлов топшириқномаси қандай мақсадда қўлланилади?","a":"Банк орқали муайян олувчига белгиланган суммада пул ўтказиш бўйича тўловчининг топшириғини расмийлаштириш учун қўлланилади."},{"q":"Банк ҳисобварағига харидордан пул келиб тушса, бу операция бухгалтерия ҳисобида қандай акс эттирилади?","a":"Агар пул аввал сотилган товар ёки кўрсатилган хизмат бўйича қарзни қоплаш учун келиб тушган бўлса: • Дебет 5110 — банк ҳисобварағи. • Кредит 4010 — харидорлар ва буюртмачилардан олинадиган тўловлар. Агар олдиндан тўлов бўлса, тегишли олинган бўнак ҳисобварағи кредитланади."},{"q":"Кассадаги ҳақиқий пул миқдори бухгалтерия ҳисоби маълумотларига мос келмаса, бухгалтер нима қилиши керак?","a":"Касса ҳужжатларини ва ҳисоб ёзувларини қайта текшириши, нақд пулни санаб чиқиши ҳамда фарқ сабабини аниқлаши керак. Камомад ёки ортиқча пул тегишли инвентаризация ҳужжатлари билан расмийлаштирилади."},{"q":"Дебиторлик ва кредиторлик қарзларининг асосий фарқи нимада?","a":"Дебиторлик қарзи -бошқаларнинг корхонага бўлган қарзи. Кредиторлик қарзи - корхонанинг бошқалар олдидаги қарзи."},{"q":"Харидорнинг корхона олдидаги қарзи қандай юзага келади?","a":"Корхона харидорга товар сотганда ёки хизмат кўрсатганда, харидор эса белгиланган суммани ҳали тўламаганда дебиторлик қарзи юзага келади."},{"q":"Корхонанинг етказиб берувчи олдидаги қарзи қандай юзага келади?","a":"Корхона товар ёки хизматни қабул қилиб олган, лекин унинг пулини ҳали тўламаган ҳолатда кредиторлик қарзи юзага келади."},{"q":"Олдиндан тўлов (аванс) нима?","a":"Аванс -товар етказиб берилмасдан, иш бажарилмасдан ёки хизмат кўрсатилмасдан олдин тўланадиган пул маблағи."},{"q":"Харидордан олинган аванс қандай ҳисобга олинади?","a":"Харидордан олинган аванс товар ёки хизмат етказиб берилгунига қадар корхонанинг мажбурияти сифатида ҳисобга олинади. Масалан: Дт 5110 — Кт 6310."},{"q":"Етказиб берувчига тўланган аванс қандай ҳисобга олинади?","a":"Етказиб берувчига тўланган аванс товар ёки хизмат олингунга қадар корхонанинг активи, яъни дебиторлик қарзи сифатида ҳисобга олинади. Масалан: Дт 4310 — Кт 5110."},{"q":"Қарздорликни солиштириш далолатномаси нима?","a":"Икки ташкилот ўртасидаги ўзаро ҳисоб-китоблар ва қарздорлик суммалари тўғрилигини солиштириш учун тузиладиган ҳужжат."},{"q":"Дебиторлик қарзларини ўз вақтида ундириш нима учун муҳим?","a":"Корхонанинг айланма маблағларини таъминлаш, тўлов қобилиятини сақлаш ва муддати ўтган қарзларни камайтириш учун муҳим."},{"q":"Муддати ўтган дебиторлик қарзи деганда нима тушунилади?","a":"Шартнома ёки қонунчиликда белгиланган тўлов муддати ўтган бўлса-да, қарздор томонидан тўланмаган сумма."},{"q":"Дебиторлик ва кредиторлик қарзларини инвентаризация қилиш қандай амалга оширилади?","a":"Бухгалтерия ҳисобидаги қарздорликлар шартномалар, ҳисоб ҳужжатлари ва ўзаро солиштириш далолатномалари асосида текширилади. Аниқланган фарқлар расмийлаштирилиб, уларни бартараф этиш чоралари кўрилади."},{"q":"Товар-моддий захиралар нима?","a":"Товар-моддий захиралар — сотиш, ишлаб чиқариш ёки хўжалик фаолиятида фойдаланиш учун сақланадиган моддий активлар."},{"q":"Товар-моддий захираларга нималар киради?","a":"Хом ашё, материаллар, ёқилғи, эҳтиёт қисмлар, тайёр маҳсулотлар, товарлар ва бошқа моддий захиралар."},{"q":"Товар-моддий захиралар корхонага келиб тушганда қандай ҳисобга олинади?","a":"Тегишли бошланғич ҳужжатлар асосида қабул қилинади ва уларнинг қиймати бухгалтерия ҳисобида акс эттирилади. Масалан, омборга товар қабул қилинганда: Дт 2910 - Кт 6010 (ҚҚС ҳисобга олинмаган соддалаштирилган мисол)."},{"q":"Товар-моддий захираларни омбордан чиқариш қандай ҳужжат билан расмийлаштирилади?","a":"Материалларни бериш талабномаси, юк хати, чиқим ҳужжати ёки корхонада белгиланган бошқа бошланғич ҳужжат билан расмийлаштирилади."},{"q":"Инвентаризация нима ва у нима мақсадда ўтказилади?","a":"Инвентаризация — корхонадаги мол-мулк ва мажбуриятларнинг ҳақиқий ҳолатини аниқлаш ҳамда бухгалтерия маълумотлари билан солиштириш жараёни."},{"q":"Инвентаризация натижасида камомад аниқланса, қандай чоралар кўрилади?","a":"Камомад далолатнома ва бошқа тегишли ҳужжатлар билан расмийлаштирилади, унинг сабаблари ўрганилади. Айбдор шахс ва зарарни қоплаш масаласи қонунчиликка мувофиқ ҳал этилади."},{"q":"Асосий восита нима?","a":"Асосий восита — корхона фаолиятида узоқ муддат фойдаланиш учун мўлжалланган, моддий шаклга эга ва тегишли тан олиш мезонларига жавоб берадиган актив."},{"q":"Асосий воситаларга қандай мисоллар келтириш мумкин?","a":"Бино, иншоот, транспорт воситаси, трактор, комбайн, ишлаб чиқариш ускунаси ва белгиланган мезонларга жавоб берадиган компьютерлар."},{"q":"Амортизация нима ва у нима учун ҳисобланади?","a":"Амортизация — асосий воситанинг амортизацияланадиган қийматини унинг фойдали хизмат муддати давомида мунтазам тақсимлаш жараёни."},{"q":"Асосий воситалар билан товар-моддий захираларнинг асосий фарқи нимада?","a":"Асосий воситалар корхона фаолиятида одатда узоқ муддат хизмат қилади. Товар-моддий захиралар эса сотиш, ишлаб чиқаришда сарфлаш ёки жорий фаолиятда истеъмол қилиш учун мўлжалланади."},{"q":"Иш ҳақи нима?","a":"Иш ҳақи — ходимга меҳнат вазифаларини бажарганлиги учун меҳнат шартномаси ва қонунчилик асосида тўланадиган ҳақ."},{"q":"Иш ҳақининг қандай шакллари мавжуд?","a":"Асосий шакллари — вақтбай ва ишбай иш ҳақи. Вақтбай иш ҳақи ишланган вақтга, ишбай иш ҳақи эса бажарилган иш ҳажмига боғлиқ ҳисобланади."},{"q":"Лавозим маоши деганда нима тушунилади?","a":"Лавозим маоши — ходимнинг муайян лавозим бўйича белгиланган меҳнат нормасини бажарганлиги учун тўланадиган, одатда ойлик миқдорда белгиланган асосий иш ҳақи."},{"q":"Иш вақти табели нима ва у нима учун юритилади?","a":"Иш вақти табели — ходимларнинг ишга келган ва келмаган кунлари, ишлаган соатлари ва иш вақтидан фойдаланиш ҳолатини ҳисобга олувчи ҳужжат. У иш ҳақини тўғри ҳисоблаш учун хизмат қилади."},{"q":"Ходимнинг бир ойлик иш ҳақини ҳисоблашда қандай маълумотлардан фойдаланилади?","a":"Лавозим маоши, иш вақти табели, ишланган кун ёки соатлар, устамалар, мукофотлар, қўшимча тўловлар ва бошқа тегишли маълумотлардан фойдаланилади."},{"q":"Иш ҳақидан қандай солиқ ва бошқа қонуний ушланмалар амалга оширилиши мумкин?","a":"Жисмоний шахслардан олинадиган даромад солиғи, ижро ҳужжатлари бўйича алимент ва бошқа қонунчиликда назарда тутилган ушланмалар амалга оширилиши мумкин. Ижтимоий солиқ иш ҳақидан ушлаб қолинмайди, у иш берувчининг солиқ мажбурияти ҳисобланади."},{"q":"Жисмоний шахслардан олинадиган даромад солиғи нима?","a":"Жисмоний шахсларнинг солиқ солинадиган даромадларидан ҳисобланадиган солиқ. Иш берувчи одатда ходим иш ҳақидан ушбу солиқни ҳисоблаб, ушлаб қолади ва бюджетга ўтказади."},{"q":"Ижтимоий солиқ нима ва уни ким тўлайди?","a":"Ижтимоий солиқ — қонунчиликда белгиланган тўловлар ва солиқ солиш базасига нисбатан ҳисобланадиган солиқ. Уни белгиланган тартибда иш берувчилар ва бошқа солиқ тўловчилар тўлайди."},{"q":"Ходимга меҳнат таътили учун тўлов қандай асосда ҳисобланади?","a":"Таътил тўлови ходимнинг белгиланган тартибда ҳисобланган ўртача иш ҳақи ва ҳақ тўланадиган таътил даври асосида аниқланади."},{"q":"Ҳисобланган иш ҳақи билан ходимнинг қўлига тегадиган соф иш ҳақининг фарқи нимада?","a":"Ҳисобланган иш ҳақи — ушланмаларгача бўлган умумий сумма. Соф иш ҳақи — тегишли солиқ ва қонуний ушланмалардан кейин ходимга тўланадиган сумма."},{"q":"Солиқ нима?","a":"Солиқ — давлат бюджетига ёки давлат мақсадли жамғармасига тўланадиган, Солиқ кодексида белгиланган мажбурий, беғараз тўлов."},{"q":"Ўзбекистонда юридик шахслар тўлайдиган асосий солиқ турларини санаб беринг.","a":"Юридик шахсларга фаолияти ва солиқ режимига қараб қуйидаги солиқлар татбиқ этилиши мумкин: ҚҚС, фойда солиғи, айланмадан олинадиган солиқ, ижтимоий солиқ, мол-мулк солиғи, ер солиғи, сув ресурсларидан фойдаланганлик учун солиқ ва бошқа солиқлар. Юридик шахслар айрим ҳолларда солиқ агенти сифатида ҳам мажбурият бажаради."},{"q":"Қўшилган қиймат солиғи (ҚҚС) нима?","a":"ҚҚС — товарлар, ишлар ва хизматларни реализация қилиш ҳамда товарларни импорт қилиш билан боғлиқ операцияларга белгиланган тартибда солинадиган билвосита солиқ."},{"q":"ҚҚС билан айланмадан олинадиган солиқнинг фарқи нимада?","a":"ҚҚС солинадиган реализация бўйича ҳисобланади ва қонунчиликда белгиланган шартлар бажарилганда харидлар бўйича ҚҚСни ҳисобга олиш механизми мавжуд. Айланмадан олинадиган солиқ эса белгиланган тоифадаги солиқ тўловчиларнинг солиқ солинадиган жами даромадидан ҳисобланади."},{"q":"Фойда солиғи нима ва у қайси кўрсаткич асосида ҳисобланади?","a":"Фойда солиғи — солиқ тўловчининг Солиқ кодекси талаблари асосида аниқланган солиқ солинадиган фойдасидан ҳисобланадиган солиқ. Солиқ солинадиган фойда бухгалтериядаги фойдадан фарқ қилиши мумкин."},{"q":"Ер солиғи нима?","a":"Ер солиғи — қонунчиликда белгиланган тартибда ер участкаларига эгалик қилиш, улардан фойдаланиш ёки бошқа белгиланган ҳуқуқлар мавжудлиги билан боғлиқ ҳолда тўланадиган солиқ."},{"q":"Мол-мулк солиғи нима?","a":"Мол-мулк солиғи — қонунчиликда белгиланган солиқ солиш объекти ҳисобланган мол-мулкка нисбатан ҳисобланадиган солиқ."},{"q":"Солиқ ҳисоботи нима ва у нима мақсадда топширилади?","a":"Солиқ ҳисоботи — солиқ тўловчининг солиқ солиш объектлари, солиқ базаси, ҳисобланган солиқлар ва бошқа зарур кўрсаткичлар тўғрисидаги маълумотларни солиқ органларига тақдим этиши."},{"q":"Солиқ даври деганда нима тушунилади?","a":"Солиқ даври — муайян солиқ бўйича солиқ базаси ва солиқ суммаси аниқланадиган календарь йил ёки бошқа белгиланган давр."},{"q":"Молиявий ҳисобот билан солиқ ҳисоботи ўртасида қандай фарқ мавжуд?","a":"Молиявий ҳисобот корхонанинг активлари, мажбуриятлари, капитали, даромадлари ва харажатлари тўғрисида ахборот беради. Солиқ ҳисоботи эса солиқ мажбуриятларини ҳисоблаш ва солиқ органларига тақдим этиш учун тузилади."},{"q":"Корхона 5 000 000 сўмга товар сотиб олди ва тўловни банк орқали амалга оширди. Ушбу операцияда қайси актив кўпаяди ва қайси актив камаяди?","a":"Корхонанинг товар захиралари 5 000 000 сўмга кўпаяди, банк ҳисобварағидаги пул маблағлари эса шунча суммага камаяди. ҚҚС ҳисобга олинмаган соддалаштирилган ҳолатда: • Товар қабул қилинди: Дт 2910 — Кт 6010. • Товар учун пул тўланди: Дт 6010 — Кт 5110."},{"q":"Корхона харидорга 10 000 000 сўмлик маҳсулот сотди, лекин харидор ҳали пул тўламади. Қандай қарздорлик юзага келади?","a":"Корхонада харидорнинг 10 000 000 сўмлик дебиторлик қарзи юзага келади. Сотиш бўйича ҚҚС ҳисобга олинмаган соддалаштирилган ёзув: Дт 4010 — Кт 9010."},{"q":"Корхона кассасида 2 000 000 сўм мавжуд эди. Кассага 3 000 000 сўм келиб тушди ва 1 500 000 сўм сарфланди. Кассада қанча пул қолади?","a":"2 000 000 + 3 000 000 − 1 500 000 = 3 500 000 сўм. Демак, кассада 3 500 000 сўм қолади."},{"q":"Корхона ходимига 4 000 000 сўм иш ҳақи ҳисобланди. Ушбу сумма бухгалтерия ҳисобида қандай акс эттирилади?","a":"Иш ҳақи тегишли харажат ҳисобварағининг дебетида, ходимлар билан ҳисоб-китоб ҳисобварағининг кредитида акс эттирилади. Масалан, маъмурий ходим учун: • Дебет 9420 — «Маъмурий харажатлар». • Кредит 6710 — «Иш ҳақи бўйича ходимлар билан ҳисоб- китоблар». Сумма: 4 000 000 сўм."},{"q":"Корхона 12 000 000 сўмга компьютер сотиб олди. Уни асосий восита сифатида ҳисобга олиш учун қандай ҳужжатлар ва маълумотлар керак?","a":"Харид шартномаси, ҳисобварақ-фактура, қабул қилиш-топшириш ҳужжати, тўлов ҳужжатлари ва компьютернинг техник маълумотлари керак бўлади. Бухгалтер компьютер асосий восита сифатида тан олиш мезонларига жавоб беришини, унинг бошланғич қиймати ва фойдали хизмат муддатини аниқлайди."},{"q":"Корхона 20 000 000 сўмлик маҳсулот сотди. Сотилган маҳсулот таннархи 15 000 000 сўмни ташкил этди. Ялпи фойда қанча бўлади?","a":"20 000 000 − 15 000 000 = 5 000 000 сўм. Демак, корхонанинг ялпи фойдаси 5 000 000 сўмни ташкил этади. Мисолда суммалар ҚҚСсиз деб олинган."},{"q":"Фермер хўжалиги 8 000 000 сўмлик минерал ўғит сотиб олди. Ушбу операция қандай ҳужжатлар билан расмийлаштирилади?","a":"Шартнома, ҳисобварақ-фактура, товарни қабул қилиш ҳужжати ва тўлов амалга оширилган бўлса, банк ҳужжати билан расмийлаштирилади. Минерал ўғит омборга қабул қилиниб, тегишли материаллар ҳисобварағида ҳисобга олинади. Кейинчалик ишлаб чиқаришда сарфланиши ҳам тегишли ҳужжат билан расмийлаштирилади."},{"q":"Фермер хўжалиги етиштирган маҳсулотини харидорга сотганда бухгалтер қандай ҳисоб ҳужжатларини расмийлаштириши ёки текшириши керак?","a":"Маҳсулот сотиш шартномаси, ҳисобварақ-фактура, юк хати ёки қабул қилиш-топшириш ҳужжатлари ҳамда тўлов ҳужжатларини текширади. Шунингдек, маҳсулотнинг миқдори, нархи, таннархи, сотишдан олинган даромад ва харидор қарздорлиги тўғри ҳисобга олинишини таъминлайди."},{"q":"Корхонанинг банк ҳисобварағида 15 000 000 сўм бор эди. Харидордан 10 000 000 сўм келиб тушди, етказиб берувчига 7 000 000 сўм тўланди. Банк ҳисобварағининг якуний қолдиғини аниқланг.","a":"15 000 000 + 10 000 000 − 7 000 000 = 18 000 000 сўм. Демак, банк ҳисобварағининг якуний қолдиғи 18 000 000 сўм."},{"q":"Бухгалтер ой якунида ҳисобот тайёрлашдан олдин қандай асосий текширув ва солиштириш ишларини амалга ошириши керак?","a":"Бухгалтер қуйидаги асосий ишларни бажариши лозим: 1. Бошланғич ҳисоб ҳужжатларининг тўлиқлигини текшириш. 2. Банк кўчирмалари ва бухгалтерия маълумотларини солиштириш. 3. Касса қолдиғи ва операцияларини текшириш. 4. Дебиторлик ва кредиторлик қарзларини солиштириш. 5. Товар-моддий захиралар ҳисобини текшириш. 6. Иш ҳақи ва солиқ ҳисоб-китобларини текшириш. 7. Асосий воситалар ва амортизация ҳисобини текшириш. 8. Ҳисобварақлар айланмаси ва қолдиқларининг тўғрилигини назорат қилиш. 9. Даромадлар ва харажатлар тегишли даврда тўғри акс эттирилганини аниқлаш. 10. Аниқланган хатоларни белгиланган тартибда тузатиб, ҳисоботларни шакллантириш."},{"q":"Солиқ нима?","a":"Солиқ - давлат бюджети ёки давлат мақсадли жамғармасига тўланадиган, Солиқ кодексида белгиланган мажбурий, беғараз тўлов."},{"q":"Ўзбекистон Республикасида солиқ муносабатлари қайси асосий қонун билан тартибга солинади?","a":"Ўзбекистон Республикасининг Солиқ кодекси билан тартибга солинади. Унда солиқ турлари, солиқ тўловчиларнинг ҳуқуқ ва мажбуриятлари, солиқларни ҳисоблаш ва тўлаш тартиблари белгиланган."},{"q":"Солиқ тўловчи ким?","a":"Солиқ кодексига мувофиқ зиммасига солиқлар ва йиғимларни тўлаш мажбурияти юклатилган юридик ёки жисмоний шахс."},{"q":"Солиқ агенти ким?","a":"Солиқ агенти — қонунчиликка мувофиқ бошқа шахснинг даромадидан солиқни ҳисоблаш, ушлаб қолиш ва бюджетга ўтказиш мажбурияти юклатилган шахс. Масалан, иш берувчи ходимнинг иш ҳақидан даромад солиғини ушлаб қолади."},{"q":"Солиқ объекти нима?","a":"Солиқ объекти — мавжудлиги солиқ мажбуриятини келтириб чиқарадиган мол-мулк, даромад, айланма, ер участкаси ёки бошқа ҳолат."},{"q":"Солиқ базаси нима?","a":"Солиқ базаси — солиқ объектининг пулда, миқдорда ёки бошқа ўлчовда ифодаланган кўрсаткичи бўлиб, солиқ суммаси шу кўрсаткич асосида ҳисобланади."},{"q":"Солиқ ставкаси нима?","a":"Солиқ ставкаси — солиқ базасининг бир бирлигига нисбатан белгиланган солиқ миқдори. У фоизда ёки қатъий суммада белгиланиши мумкин."},{"q":"Солиқ даври нима?","a":"Солиқ даври — солиқ базаси ва солиқ суммаси аниқланадиган календарь йил ёки бошқа белгиланган вақт оралиғи."},{"q":"Солиқ имтиёзи нима?","a":"Солиқ имтиёзи — қонунчиликда белгиланган асослар бўйича муайян солиқ тўловчига солиқни тўламаслик, камайтирилган ставкада тўлаш ёки бошқа енгилликлардан фойдаланиш имконияти."},{"q":"Солиқ тўловчининг асосий мажбуриятлари нималардан иборат?","a":"Солиқларни тўғри ҳисоблаш ва ўз вақтида тўлаш, ҳисобни юритиш, белгиланган солиқ ҳисоботларини тақдим этиш, зарур ҳужжатларни сақлаш ҳамда солиқ органларининг қонуний талабларини бажариш."},{"q":"Ўзбекистонда қандай асосий солиқ турлари мавжуд?","a":"Қўшилган қиймат солиғи, акциз солиғи, фойда солиғи, жисмоний шахслардан олинадиган даромад солиғи, ер солиғи, мол- мулк солиғи, ижтимоий солиқ, сув ресурсларидан фойдаланганлик учун солиқ, ер қаъридан фойдаланганлик учун солиқ ва бошқа белгиланган солиқлар. Айрим тўловчилар учун айланмадан олинадиган солиқнинг махсус режими қўлланилади."},{"q":"Қўшилган қиймат солиғи (ҚҚС) нима ва 2026 йилда унинг асосий ставкаси қанча?","a":"ҚҚС - товарлар, ишлар ва хизматларни реализация қилиш билан боғлиқ операцияларга солинадиган билвосита солиқ. 2026 йилда унинг умумий ставкаси 12 фоиз. Қонунчиликда айрим операциялар учун бошқа тартиблар ҳам мавжуд."},{"q":"Фойда солиғи нима ва унинг базавий ставкаси қанча?","a":"Фойда солиғи — юридик шахсларнинг солиқ солинадиган фойдасидан ҳисобланадиган солиқ. 2026 йилда базавий ставка 15 фоиз. Айрим фаолиятлар ва солиқ тўловчилар учун бошқа ставкалар ёки имтиёзлар белгиланиши мумкин."},{"q":"Айланмадан олинадиган солиқ нима ва унинг базавий ставкаси қанча?","a":"Айланмадан олинадиган солиқ — белгиланган шартларга жавоб берувчи солиқ тўловчиларнинг солиқ солинадиган жами даромадидан ҳисобланадиган солиқ. 2026 йилда юридик шахслар учун умумий ставка 4 фоиз. Айрим тоифалар учун махсус ставкалар белгиланган."},{"q":"Жисмоний шахслардан олинадиган даромад солиғининг асосий ставкаси қанча?","a":"2026 йилда жисмоний шахсларнинг аксарият солиқ солинадиган даромадлари учун ставка 12 фоиз."},{"q":"Ижтимоий солиқнинг асосий ставкаси қанча?","a":"2026 йилда аксарият иш берувчилар учун ижтимоий солиқ ставкаси 12 фоиз, бюджет ташкилотлари учун эса 25 фоиз. Айрим тоифаларга нисбатан алоҳида ставкалар белгиланиши мумкин."},{"q":"Мол-мулк солиғи нима?","a":"Мол-мулк солиғи — қонунчиликда солиқ солиш объекти сифатида белгиланган мол-мулкка нисбатан ҳисобланадиган солиқ. Юридик шахслар мол-мулк солиғининг 2026 йилдаги асосий ставкаси 1,5 фоиз."},{"q":"Ер солиғи нима?","a":"Ер солиғи — ер участкаларига бўлган тегишли ҳуқуқлар ва ернинг белгиланган кўрсаткичлари асосида ҳисобланадиган солиқ. Унинг миқдори ер тоифаси, жойлашуви ва бошқа қонуний омилларга боғлиқ."},{"q":"Сув ресурсларидан фойдаланганлик учун солиқ нима?","a":"Ер усти ва ер ости сув ресурсларидан фойдаланиш билан боғлиқ ҳолда, Солиқ кодексида белгиланган шартлар асосида ҳисобланадиган солиқ. Фермер хўжаликларида сувдан фойдаланиш ҳажмининг тўғри ҳисобга олиниши муҳим."},{"q":"Акциз солиғи нима?","a":"Акциз солиғи — Солиқ кодексида белгиланган айрим товарлар ва операцияларга нисбатан қўлланиладиган билвосита солиқ. Масалан, муайян турдаги алкоголь, тамаки ва бошқа акциз тўланадиган товарлар. 11–20-саволлардаги умумий ставкалар 2026 йил учун эълон қилинган солиқ сиёсати маълумотларига асосланган. Махсус солиқ режимлари ва имтиёзлар алоҳида текширилади."},{"q":"Солиқ тўловчининг асосий ҳуқуқлари нималардан иборат?","a":"Солиқлар бўйича тушунтириш олиш, қонунчиликдаги имтиёзлардан фойдаланиш, ортиқча тўланган солиқларни ҳисобга олдириш ёки қайтариш, солиқ органлари қарорлари ва ҳаракатлари устидан шикоят қилиш."},{"q":"Солиқ қарзи нима?","a":"Солиқ қарзи — белгиланган муддатда тўланмаган солиқлар ва йиғимлар, шунингдек қонунчиликка мувофиқ улар билан боғлиқ пеня ва тегишли молиявий санкциялар суммаси."},{"q":"Пеня нима?","a":"Пеня — солиқ мажбурияти белгиланган муддатда бажарилмагани учун қонунчиликда назарда тутилган тартибда ҳисобланадиган қўшимча сумма."},{"q":"Солиқ ҳисоботи белгиланган муддатда тақдим этилмаса, қандай оқибатлар бўлиши мумкин?","a":"Қонунчиликда белгиланган шартларга кўра маъмурий жавобгарлик ёки бошқа таъсир чоралари қўлланилиши мумкин. Жавобгарлик масаласида ҳисоботнинг проактив тартибда шакллангани ва техник ҳолатлар ҳам ҳисобга олинади."},{"q":"Камерал солиқ текшируви нима?","a":"Камерал солиқ текшируви — солиқ органлари томонидан солиқ тўловчининг ҳисоботлари, ҳужжатлари ва ахборот тизимларидаги маълумотларни ўрганиш орқали амалга ошириладиган текширув."},{"q":"Сайёр солиқ текшируви нима?","a":"Сайёр солиқ текшируви — солиқ тўловчининг фаолияти билан боғлиқ муайян ҳолатларни бевосита жойига чиққан ҳолда текшириш шакли."},{"q":"Солиқ аудити нима?","a":"Солиқ аудити — муайян давр учун солиқлар тўғри ҳисоблангани ва тўланганини қонунчиликда белгиланган тартибда текширишга қаратилган солиқ назорати шакли."},{"q":"Солиқ органидан талабнома келса, бухгалтер қандай ҳаракат қилиши керак?","a":"Талабнома мазмуни, ҳуқуқий асоси ва бажариш муддатини ўрганади, ҳисобот ва ҳужжатларни текширади ҳамда белгиланган тартибда асосланган жавоб ёки аниқлаштирилган ҳисобот тақдим этади."},{"q":"Ортиқча тўланган солиқ суммаси нима?","a":"Солиқ тўловчи томонидан қонунчилик бўйича тўланиши лозим бўлган суммадан ортиқ тўланган маблағ. У белгиланган тартибда келгуси тўловларга ҳисобга олиниши ёки қайтарилиши мумкин."},{"q":"Солиқ ҳисоботида хато аниқланса, уни қандай тузатиш мумкин?","a":"Хатонинг сабаби аниқланади, тегишли ҳужжатлар текширилади ва зарур бўлса, белгиланган тартибда аниқлаштирилган солиқ ҳисоботи тақдим этилади."},{"q":"Солиқ ҳисоботи нима?","a":"Солиқ ҳисоботи — солиқ тўловчининг муайян солиқ даври бўйича солиқ базаси, ҳисобланган солиқ суммалари ва бошқа белгиланган кўрсаткичлар тўғрисидаги маълумотларни солиқ органларига тақдим этиш шакли."},{"q":"Юридик шахслар солиқ ҳисоботларини қандай шаклда тақдим этади?","a":"Юридик шахслар солиқ ҳисоботларини белгиланган шакллар бўйича электрон ҳужжат тарзида, солиқ органларининг ахборот тизимлари орқали тақдим этади."},{"q":"Солиқ ҳисоботларини электрон юбориш учун қайси порталдан фойдаланилади?","a":"Солиқ қўмитасининг электрон солиқ хизматлари портали — my3.soliq.uz орқали фойдаланилади. Унда солиқ тўловчининг шахсий кабинети ва ҳисоботларга оид хизматлар мавжуд."},{"q":"Солиқ ҳисоботини юбориш учун қандай маълумотлар ва воситалар керак?","a":"Солиқ тўловчининг идентификация маълумотлари, тегишли ҳисобот даври, бухгалтерия ва солиқ ҳисоби маълумотлари, зарур электрон ҳужжатлар ҳамда ваколатли шахснинг электрон рақамли имзоси керак бўлади."},{"q":"Солиқ ҳисоботини электрон юбориш кетма- кетлигини тушунтиринг.","a":"1. Солиқ тўловчининг шахсий кабинетига кирилади. 2. Тегишли ташкилот танланади. 3. Солиқ ҳисоботларига оид бўлим очилади. 4. Керакли солиқ тури ва ҳисобот даври танланади. 5. Ҳисобот маълумотлари текширилади ва зарур бўлса тўлдирилади. 6. Тизимдаги назорат хатолари бартараф этилади. 7. Ҳисобот ваколатли шахснинг ЭРИси билан тасдиқланиб юборилади. 8. Ҳисоботнинг қабул қилинганлиги ва якуний ҳолати текширилади."},{"q":"Солиқ ҳисоботини юборишдан олдин нималар текширилиши шарт?","a":"Ташкилот СТИРи, солиқ тури, ҳисобот даври, солиқ базаси, ставка, ҳисобланган солиқ, қўлланилган имтиёзлар ва илова маълумотларининг тўғрилиги текширилади."},{"q":"Солиқ ҳисоботидаги автоматик тўлдирилган маълумотлар доим тўғри бўладими?","a":"Йўқ. Автоматик маълумотлар асосан солиқ органларининг ахборот тизимларидаги маълумотларга таянади. Бухгалтер уларни ҳақиқий хўжалик операциялари ва бошланғич ҳужжатлар билан солиштириши лозим."},{"q":"Солиқ ҳисоботи юборилганини қандай текшириш мумкин?","a":"Шахсий кабинетнинг ҳисоботлар журнали ёки тегишли бўлимида ҳисобот ҳолати, қабул қилинганлиги ҳақидаги электрон тасдиқ ва мавжуд бўлса, рад этиш сабаблари текширилади."},{"q":"Солиқ ҳисоботи тизим томонидан рад этилса, нима қилиш керак?","a":"Рад этиш сабабини ўрганиш, ҳисоботдаги техник ёки мазмуний хатони тузатиш ва ҳисоботни қайта юбориш керак. Кейин унинг қабул қилинганлиги албатта текширилади."},{"q":"Солиқ ҳисоботини юбориш муддати қандай аниқланади?","a":"Ҳар бир солиқ тури бўйича Солиқ кодексида белгиланган муддат асосида аниқланади. Бухгалтер амалдаги солиқ тақвимини кузатиб бориши керак. Муддат дам олиш ёки байрам кунига тўғри келганда уни ҳисоблашнинг қонуний қоидалари инобатга олинади. Ҳуқуқий асос: Солиқ кодексининг 81–82-моддалари, шунингдек электрон солиқ хизматлари портали бўйича Солиқ қўмитаси маълумотлари."},{"q":"Айланмадан олинадиган солиқ ҳисоботи қандай маълумотлар асосида шакллантирилади?","a":"Солиқ солинадиган жами даромад, электрон ҳисобварақ-фактуралар, онлайн касса маълумотлари ва бошқа ҳисоб ҳужжатлари асосида шакллантирилади. Бунда қонунчиликдаги солиқ базасига оид қоидалар ҳисобга олинади."},{"q":"Айланмадан олинадиган солиқ ҳисоботи қайси муддатда тақдим этилади?","a":"Одатда ҳар ой, ҳисобот ойидан кейинги ойнинг 15- санасидан кечиктирмай тақдим этилади."},{"q":"Айланмадан олинадиган солиқ бўйича проактив ҳисобот нима?","a":"Бу солиқ органлари томонидан мавжуд электрон маълумотлар асосида автоматик шакллантириладиган ҳисобот. 2026 йилдан мазкур тартиб жорий этилган."},{"q":"Проактив ҳисоботда хато бўлса, бухгалтер нима қилиши керак?","a":"Шахсий кабинетда автоматик ҳисоботни очади, кўрсаткичларни текширади, «Ўзгартириш» функцияси орқали зарур тузатишларни киритади ва белгиланган муддатда тақдим этади."},{"q":"Автоматик шаклланган ҳисоботга ўзгартириш киритилмаса, нима бўлади?","a":"Солиқ кодексидаги проактив тартибга кўра, белгиланган муддатгача тузатиш киритилмаса, солиқ тўловчи автоматик шаклланган маълумотларга рози деб ҳисобланади ва ҳисобот тақдим этилган ҳисобланади."},{"q":"Жисмоний шахслардан олинадиган даромад солиғи ҳисоботида қандай маълумотлар акс эттирилади?","a":"Ходимлар ва бошқа даромад олувчиларга ҳисобланган даромадлар, тегишли солиқ базаси, имтиёзлар, ҳисобланган ва ушлаб қолинган даромад солиғи ҳамда ҳисобот шаклида талаб қилинадиган бошқа кўрсаткичлар акс эттирилади."},{"q":"Ижтимоий солиқ ҳисоботи қандай маълумотлар асосида шакллантирилади?","a":"Ходимлар ва бошқа тегишли жисмоний шахсларга ҳисобланган меҳнатга ҳақ тўлаш тарзидаги тўловлар, солиқ солиш базаси, қўлланиладиган ставкалар ва имтиёзлар асосида шакллантирилади."},{"q":"Даромад солиғи ва ижтимоий солиқ ҳисоботлари қайси муддатда тақдим этилади?","a":"Ойлик ҳисоботлар ҳисобот ойидан кейинги ойнинг 15- кунидан кечиктирмай, йил якунлари бўйича эса кейинги йилнинг 15 февралидан кечиктирмай тақдим этилади."},{"q":"Даромад солиғи ва ижтимоий солиқ ҳисоботлари проактив тартибда шакллантириладими?","a":"Ҳа. 2026 йил 1 январдан бошлаб ушбу ҳисоботларни солиқ органлари томонидан проактив тартибда шакллантириш тизими жорий этилган. Бухгалтер уларни текшириши ва мавжуд хатоларни тузатиши лозим."},{"q":"Иш ҳақидан ушлаб қолинадиган даромад солиғи билан ижтимоий солиқнинг фарқи нимада?","a":"Даромад солиғи ходимнинг солиқ солинадиган даромадидан ушлаб қолинади. Ижтимоий солиқ эса иш берувчининг мажбурияти бўлиб, ходимнинг ҳисобланган иш ҳақидан ушлаб қолинмайди. 2026 йилги проактив ҳисобот тартиби ва ойлик ҳисобот муддатлари Солиқ қўмитасининг расмий тушунтиришларига мувофиқ."},{"q":"ҚҚС ҳисоботи нима?","a":"ҚҚС ҳисоботи — муайян солиқ давридаги ҚҚС солинадиган айланма, ҳисобланган ҚҚС, ҳисобга олинадиган ҚҚС ва якуний солиқ мажбурияти тўғрисидаги ҳисоб-китоб."},{"q":"ҚҚС ҳисоботи қандай асосий маълумотлар асосида тўлдирилади?","a":"Сотиш ва харид қилиш бўйича электрон ҳисобварақ- фактуралар, онлайн касса чеклари, божхона ҳужжатлари ва бошқа тегишли ҳисоб ҳужжатлари асосида тўлдирилади."},{"q":"ҚҚС ҳисоботи қайси муддатда тақдим этилади?","a":"Одатда ҳар ой, ҳисобот ойидан кейинги ойнинг 20- санасидан кечиктирмай тақдим этилади."},{"q":"Ҳисобланган ҚҚС нима?","a":"Товарлар ёки хизматларни реализация қилиш ва бошқа ҚҚС солинадиган операциялар бўйича ҳисобланган солиқ суммаси. Масалан, 10 000 000 сўмлик ҚҚСсиз товар 12 фоиз ставкада сотилса, ҚҚС 1 200 000 сўмни ташкил этади."},{"q":"Ҳисобга олинадиган ҚҚС нима?","a":"Қонунчиликда белгиланган шартлар бажарилганда, товарлар ва хизматларни сотиб олишда тўланган ёки тўланиши лозим бўлган ҚҚСнинг бюджетга тўланадиган ҚҚСни ҳисоблашда чегириб ташланадиган суммаси."},{"q":"Бюджетга тўланадиган ҚҚС қандай аниқланади?","a":"Умумий ҳолатда ҳисобланган ҚҚСдан қонунчиликка мувофиқ ҳисобга олинадиган ҚҚС айирилади. Масалан: • Ҳисобланган ҚҚС — 2 400 000 сўм. • Ҳисобга олинадиган ҚҚС — 1 000 000 сўм. • Бюджетга тўланадиган ҚҚС — 1 400 000 сўм. Бу соддалаштирилган мисол бўлиб, реал ҳисоб-китобда тузатишлар ва бошқа кўрсаткичлар ҳам ҳисобга олинади."},{"q":"ҚҚС ҳисоботида электрон ҳисобварақ- фактураларни текшириш нима учун муҳим?","a":"Сотиш айланмаси, харидлар, солиқ суммалари ва контрагент маълумотлари тўғри акс этганлигини таъминлаш учун муҳим. Хато маълумотлар ҳисоботда тафовутлар юзага келтириши мумкин."},{"q":"ҚҚС бўйича солиқ тўловчи сифатида рўйхатдан ўтганлик ҳолатини қандай текшириш мумкин?","a":"Солиқ қўмитасининг электрон хизматлари орқали юридик шахснинг ҚҚС тўловчиси сифатида рўйхатдан ўтганлик ҳолати ва тегишли маълумотлари текширилади."},{"q":"ҚҚС ҳисоботида сотиш айланмаси электрон ҳисобварақ-фактуралар маълумотларидан фарқ қилса, нима қилиш керак?","a":"Тафовутнинг сабабини аниқлаш, ҳисобварақ- фактураларни, онлайн касса чекларини ва бошқа операцияларни текшириш керак. Зарур бўлса, ҳужжатлар ёки ҳисоботга белгиланган тартибда тузатиш киритилади."},{"q":"ҚҚС ҳисоботини юборгандан кейин бухгалтер қандай амалларни бажариши керак?","a":"Ҳисобот қабул қилинганлигини текширади, ҳисобланган ҚҚС суммасини бухгалтерия ҳисоби билан солиштиради, тўлов мажбуриятини аниқлайди ва белгиланган муддатда солиқ тўланганлигини назорат қилади. ҚҚС ҳисоботи ва тўловининг умумий муддати — Солиқ кодексининг 273-моддаси; ҚҚСга тузатишлар киритиш бўйича интерактив хизматлар ҳам мавжуд."},{"q":"Фойда солиғи ҳисоботи қандай маълумотлар асосида тўлдирилади?","a":"Корхонанинг жами даромади, солиқ мақсадида чегириб ташланадиган ва чегирилмайдиган харажатлари, солиқ имтиёзлари, солиқ базаси ва ҳисобланган солиқ суммаси асосида тўлдирилади."},{"q":"Фойда солиғи ҳисоботи қайси муддатларда тақдим этилади?","a":"Фойда солиғи бўйича чораклик ҳисоботлар одатда ҳисобот чорагидан кейинги ойнинг 20-санасидан кечиктирмай, йиллик ҳисобот эса кейинги йилнинг 1 мартидан кечиктирмай тақдим этилади."},{"q":"Фойда солиғи ҳисоботида қандай харажатлар ҳисобга олинади?","a":"Солиқ кодекси талабларига жавоб берадиган, даромад олиш билан боғлиқ, асосланган ва тегишли ҳужжатлар билан тасдиқланган харажатлар ҳисобга олинади. Қонунчиликда чегирилиши тақиқланган харажатлар солиқ базасидан айирилмайди."},{"q":"Фойда солиғи ҳисоботини юборишдан олдин бухгалтер нималарни текшириши керак?","a":"Даромад ва харажатлар тўғри акс эттирилганини, солиқ мақсадида тан олинмайдиган харажатлар ажратилганини, имтиёзлар қонуний қўлланилганини ва солиқ базаси тўғри ҳисобланганини текшириши керак."},{"q":"Юридик шахсларнинг мол-мулк солиғи ҳисоботи қандай маълумотлар асосида шакллантирилади?","a":"Солиқ солинадиган мол-мулк объектлари, уларнинг солиқ базаси, қўлланиладиган ставка, имтиёзлар ва бошқа белгиланган маълумотлар асосида шакллантирилади."},{"q":"2026 йилда юридик шахсларнинг мол-мулк солиғи ҳисоботларини шакллантиришда қандай янгилик жорий этилган?","a":"2026 йил 1 январдан мол-мулк солиғи ҳисоботлари солиқ органлари томонидан проактив тартибда шакллантирилмоқда. Солиқ тўловчилар автоматик ҳисобланган маълумотларни текшириб, зарур ҳолларда тегишли ўзгартиришларни киритишлари мумкин."},{"q":"Ер солиғи ҳисоботида қандай маълумотлар муҳим ҳисобланади?","a":"Ер участкасининг майдони, жойлашган ҳудуди, ер тоифаси, кадастр маълумотлари, норматив қиймати ёки тегишли солиқ базаси, солиқ ставкаси ва имтиёзлар муҳим ҳисобланади."},{"q":"Фермер хўжаликларининг қишлоқ хўжалиги ерлари бўйича солиқ ҳисоботлари қандай шакллантирилади?","a":"2026 йил учун қишлоқ хўжалигига мўлжалланган ерлар бўйича ҳисоботлар солиқ органлари томонидан автоматик шакллантирилиб, солиқ тўловчиларнинг шахсий кабинетларига жойлаштирилган. Бухгалтер ер майдони ва норматив қиймат тўғри акс этганини текшириши лозим."},{"q":"Фермер хўжалигининг ер майдони ёки норматив қиймати ҳисоботда нотўғри кўрсатилган бўлса, нима қилиш керак?","a":"Кадастр ва ер ҳисобга олиш ҳужжатларини текшириш, маълумотдаги хатоликни аниқлаш ва уни тузатиш учун тегишли ваколатли органга мурожаат қилиш керак. Сўнг солиқ ҳисобидаги маълумотлар мувофиқлаштирилади."},{"q":"Фермер хўжалигининг ўзи етиштирган қишлоқ хўжалиги маҳсулотини сотишдан олган фойдасига қандай ставка қўлланилиши мумкин?","a":"Солиқ кодексининг 57-моддасидаги мезонларга жавоб берувчи қишлоқ хўжалиги товар ишлаб чиқарувчилари учун ўзлари ишлаб чиқарган қишлоқ хўжалиги маҳсулотини реализация қилишдан олинган фойдага нисбатан 0 фоизлик фойда солиғи ставкаси қўлланилиши мумкин. Бунда қонунчиликда белгиланган барча шартлар бажарилиши керак. Манбалар: Солиқ қўмитасининг фойда солиғи бўйича расмий тушунтиришлари, 2026 йилги ер ва мол-мулк солиғи ҳисоботларига оид маълумотлар."},{"q":"Солиқ тўловчининг шахсий кабинети нима?","a":"Шахсий кабинет — солиқ тўловчининг солиқ мажбуриятлари, ҳисоботлари, тўловлари ва бошқа маълумотларини электрон шаклда кўриш ҳамда солиқ хизматларидан масофадан фойдаланиш имконини берувчи ахборот тизими."},{"q":"Шахсий кабинет орқали қандай асосий амалларни бажариш мумкин?","a":"Солиқ ҳисоботларини кўриш ва юбориш, ҳисобланган солиқларни текшириш, солиқ қарздорлигини аниқлаш, электрон ҳужжатлар билан ишлаш, ариза ва мурожаатлар юбориш ҳамда бошқа интерактив хизматлардан фойдаланиш мумкин."},{"q":"Электрон рақамли имзо (ЭРИ) нима?","a":"Электрон рақамли имзо — электрон ҳужжатнинг ҳақиқийлигини, имзоловчи шахсни ва ҳужжат маълумотларининг ўзгармаганлигини текшириш имконини берувчи электрон имзо."},{"q":"Электрон рақамли имзони қандай олиш мумкин?","a":"Белгиланган тартибда Давлат хизматлари маркази, my.gov.uz портали ёки e-imzo.soliq.uz ахборот ресурси орқали мурожаат қилиб олиш мумкин. Юридик шахслар номидан мурожаат қилиш тартиби ваколатли шахс мақомига боғлиқ."},{"q":"Электрон рақамли имзонинг амал қилиш муддати тугаган бўлса, бухгалтер нима қилиши керак?","a":"ЭРИ сертификатининг амал қилиш муддати текширилади ва белгиланган тартибда янги сертификат олинади. Муддати тугаган ёки ҳақиқий бўлмаган имзо билан ҳужжатларни тасдиқлаш мумкин эмас."},{"q":"Электрон ҳисобварақ-фактура (ЭҲФ) нима?","a":"ЭҲФ — товарлар, ишлар ёки хизматлар реализациясини электрон шаклда расмийлаштирувчи ҳужжат бўлиб, бухгалтерия ва солиқ ҳисобида фойдаланилади."},{"q":"Электрон ҳисобварақ-фактурани расмийлаштиришда қайси маълумотлар текширилади?","a":"Сотувчи ва харидор реквизитлари, СТИР, шартнома маълумотлари, товар ёки хизмат номи, МХИК, миқдор, нарх, умумий сумма, ҚҚС ставкаси ва суммаси ҳамда бошқа мажбурий реквизитлар текширилади."},{"q":"МХИК нима ва у нима учун керак?","a":"МХИК — маҳсулот ва хизматларнинг идентификация коди. У товар ёки хизмат турини электрон ҳисобварақ-фактуралар, онлайн касса чеклари ва бошқа ахборот тизимларида тўғри таснифлаш учун қўлланилади."},{"q":"Контрагент юборган электрон ҳисобварақ- фактурада хато бўлса, бухгалтер қандай ҳаракат қилиши керак?","a":"Ҳужжатни текшириши, хато ҳақида контрагентга хабар бериши ва тегишли тартибда тузатилган ҳужжат расмийлаштирилишини таъминлаши керак. Нотўғри маълумотни асосланмаган ҳолда ҳисобга олмаслик лозим."},{"q":"Электрон ҳужжатларнинг хавфсизлигини таъминлаш учун нималарга амал қилиш керак?","a":"ЭРИнинг ёпиқ калити ва паролини бошқа шахсларга бермаслик, фақат ишончли ахборот тизимларидан фойдаланиш, ходимларга ваколатлари доирасида рухсат бериш ва электрон ҳужжатларни белгиланган тартибда сақлаш лозим. ЭРИни олиш ва рўйхатдан ўтказиш тартиби ҳамда электрон хизматлар ҳақида:"},{"q":"Солиқ қўмитасининг интерактив хизматлари нима?","a":"Солиқ тўловчиларга интернет орқали солиқ маълумотларини олиш, ҳисобот топшириш, ҳужжатлар расмийлаштириш ва бошқа хизматлардан масофадан фойдаланиш имконини берувчи электрон хизматлар."},{"q":"Корхонада солиқ қарзи бор ёки йўқлигини қандай аниқлаш мумкин?","a":"Солиқ тўловчининг шахсий кабинети орқали солиқлар бўйича ҳисоб-китобларни текшириш ёки солиқ қарзи мавжудлиги ёхуд мавжуд эмаслиги тўғрисидаги электрон маълумотнома хизматидан фойдаланиш мумкин."},{"q":"Солиқ қарзи мавжуд эмаслиги ҳақида маълумотномани электрон олиш мумкинми?","a":"Ҳа. Солиқ қўмитасининг электрон хизматлари орқали ушбу маълумотномани олиш мумкин. 2026 йилда мазкур хизмат бепул ва реал вақт режимида кўрсатилиши маълум қилинган."},{"q":"Солиқ тўловчининг шахсий ҳисоб-китоб карточкаси нима учун керак?","a":"Шахсий ҳисоб-китоб карточкасида ҳисобланган солиқлар, амалга оширилган тўловлар, ортиқча тўловлар ва солиқ қарздорлиги тўғрисидаги маълумотлар акс эттирилади."},{"q":"Корхонага нисбатан қўлланиладиган солиқ имтиёзларини қаердан аниқлаш мумкин?","a":"Солиқ кодекси, қонунчилик ҳужжатлари, Солиқ қўмитасининг расмий ахборот ресурслари ва «Юридик шахслар учун солиқ имтиёзлари» интерактив хизмати орқали аниқлаш мумкин."},{"q":"«Soliq» мобил иловаси қандай имкониятларни тақдим этади?","a":"У фуқароларга солиқ мажбуриятлари ва ҳисобланган солиқлар ҳақида маълумот олиш, айрим солиқ тўловларини амалга ошириш, фискал чекларни текшириш ва бошқа электрон солиқ хизматларидан фойдаланиш имконини беради."},{"q":"Онлайн назорат-касса машинаси ёки виртуал касса нима?","a":"Онлайн назорат-касса техникаси — ҳисоб-китоб операцияларини фискаллаштириш, белгиланган реквизитларга эга чек шакллантириш ва тегишли маълумотларни фискал маълумотлар тизимига юбориш учун фойдаланиладиган техник ёки дастурий восита."},{"q":"Фискал чекда қандай асосий маълумотлар бўлиши керак?","a":"Сотувчининг номи ва СТИРи, товар ёки хизмат номи, миқдори, нархи, умумий сумма, тўлов санаси ва вақти, тегишли ҳолларда ҚҚС маълумотлари, фискал белги ва QR-код каби белгиланган реквизитлар бўлиши керак."},{"q":"Солиқ тўловчи интерактив хизматдан фойдаланишда техник муаммога дуч келса, қаерга мурожаат қилиши мумкин?","a":"Солиқ қўмитасининг 1198 рақамли алоқа марказига, шахсий кабинет орқали электрон мурожаат хизматига ёки тегишли солиқ органига мурожаат қилиши мумкин."},{"q":"«AI SOLIQ» платформаси нима ва у қандай мақсадда фойдаланилади?","a":"ai.soliq.uz — Солиқ қўмитасининг сунъий интеллектга асосланган рақамли платформаси. У солиқ маълумотларини таҳлил қилиш, солиқ қонунчилиги, имтиёзлар, ҳисоботлар ва айрим солиқ хавфлари бўйича тушунтиришлар олишга ёрдам беради. Бироқ унинг тушунтиришлари қонунчилик нормаларини ва солиқ тўловчининг ҳисоб маълумотларини мустақил текшириш заруратини бекор қилмайди. Интерактив хизматлар рўйхати, фискал чек талаблари ва AI SOLIQ бўйича расмий маълумотлар."},{"q":"Корхона 10 000 000 сўмлик товар сотди. ҚҚС ставкаси 12 фоиз бўлса, ҳисобланган ҚҚС қанча бўлади?","a":"Агар 10 000 000 сўм ҚҚСсиз нарх бўлса: 10 000 000 × 12% = 1 200 000 сўм. ҚҚС билан биргаликдаги умумий сумма 11 200 000 сўмни ташкил этади."},{"q":"Корхонанинг солиқ солинадиган фойдаси 100 000 000 сўмни ташкил этди. Фойда солиғининг базавий ставкаси 15 фоиз бўлса, қанча солиқ ҳисобланади?","a":"100 000 000 × 15% = 15 000 000 сўм. Демак, махсус ставка ёки имтиёз қўлланилмаган тақдирда фойда солиғи 15 000 000 сўм бўлади."},{"q":"Айланмадан олинадиган солиқ тўловчиси бўлган корхонанинг солиқ солинадиган ойлик даромади 50 000 000 сўм. 4 фоизлик ставкада қанча солиқ тўлайди?","a":"50 000 000 × 4% = 2 000 000 сўм. Демак, ушбу мисолда айланмадан олинадиган солиқ 2 000 000 сўмни ташкил этади."},{"q":"Ходимга 5 000 000 сўм иш ҳақи ҳисобланди. Даромад солиғи 12 фоиз бўлса, қанча солиқ ушлаб қолинади?","a":"5 000 000 × 12% = 600 000 сўм. Агар солиқ имтиёзлари ва бошқа ушланмалар мавжуд бўлмаса, ходимга тўланадиган сумма: 5 000 000 − 600 000 = 4 400 000 сўм."},{"q":"Корхона бухгалтериясида ойлик тушум 120 000 000 сўм, аммо солиқ тизимида 100 000 000 сўм кўрсатилмоқда. Бухгалтер нима қилиши керак?","a":"Биринчи навбатда, суммалар бир хил асосда — ҚҚС билан ёки ҚҚСсиз ҳисобланганини текшириши керак. Кейин электрон ҳисобварақ-фактуралар, онлайн касса маълумотлари, банк тушумлари ва бухгалтерия ҳужжатлари солиштирилади. 20 000 000 сўмлик фарқ сабаби аниқланиб, зарур ҳужжатлар ёки ҳисоботга тузатиш киритилади."},{"q":"Солиқ ҳисоботи белгиланган муддатда юборилган, лекин шахсий кабинетда рад этилгани кўрсатилган. Бухгалтер қандай ҳаракат қилиши лозим?","a":"Рад этиш сабабини аниқлайди, техник ёки мазмуний хатони тузатади ва ҳисоботни қайта юборади. Агар техник носозлик мавжуд бўлса, бу ҳақда далилларни сақлайди ва зарур ҳолда солиқ органига мурожаат қилади. Ҳисоботнинг қабул қилинганлиги текширилмагунча вазифа тўлиқ бажарилган деб ҳисобланмайди."},{"q":"Фермер хўжалигининг ер майдони 100 гектар, аммо солиқ тизимида 120 гектар кўрсатилган. Бухгалтер қандай йўл тутиши керак?","a":"Ер участкасига оид кадастр ҳужжатлари, ердан фойдаланиш ҳуқуқи ва амалдаги ер маълумотлари текширилади. Тафовут сабаби аниқланиб, зарур ҳолда ваколатли органга мурожаат қилинади ҳамда солиқ органининг ахборот тизимидаги маълумотларни тўғрилаш чоралари кўрилади."},{"q":"Фермер хўжалигига 80 000 000 сўмлик минерал ўғит олинган, лекин электрон ҳисобварақ-фактура маълумотлари солиқ тизимида акс этмаган. Бухгалтер нима қилиши керак?","a":"Етказиб берувчи томонидан ЭҲФ тўғри расмийлаштирилгани ва юборилганини, контрагент реквизитларини, ҳужжат мақомини ва санаcини текшириши керак. Зарур бўлса, етказиб берувчига мурожаат қилинади. Хўжалик операцияси бухгалтерияда тегишли бошланғич ҳужжатлар асосида акс эттирилади; ҚҚСни ҳисобга олиш эса қонунчиликдаги шартлар асосида амалга оширилади."},{"q":"Бухгалтер солиқ ҳисоботини тайёрлаб, ЭРИ орқали тасдиқлади. Ҳисобот тўғри юборилганига қандай ишонч ҳосил қилади?","a":"Шахсий кабинетда ҳисобот ҳолатини текширади, қабул қилинганлиги ҳақидаги электрон тасдиқни кўради ва ҳисобот санаси ҳамда рақамини қайд этади. Юборилган ҳисобот нусхаси ва қабул қилинганлигини тасдиқловчи маълумотлар сақланади."},{"q":"Бухгалтер ҳар ой солиқ ҳисоботларини топширишдан олдин қандай асосий ишларни бажариши керак?","a":"Бухгалтер қуйидаги ишларга эътибор қаратиши лозим: 1. Барча хўжалик операциялари бухгалтерия ҳисобида тўғри акс этганини текшириш. 2. Электрон ҳисобварақ-фактуралар ва онлайн касса маълумотларини солиштириш. 3. Банк айланмалари ва тушумларни текшириш. 4. Иш ҳақи, даромад солиғи ва ижтимоий солиқ ҳисоб- китобларини текшириш. 5. ҚҚС ва бошқа солиқ базаларини тўғри аниқлаш. 6. Солиқ имтиёзларининг қонуний қўлланилишини назорат қилиш. 7. Автоматик шаклланган ҳисоботлардаги маълумотларни текшириш. 8. Мавжуд тафовут ва хатоларни бартараф этиш. 9. Солиқ ҳисоботларини белгиланган муддатларда тақдим этиш ёки проактив ҳисоботларнинг тўғри шаклланганини назорат қилиш. 10. Ҳисоботнинг қабул қилинганлигини ва солиқ мажбуриятлари бажарилганлигини текшириш."},{"q":"ПФ–100-сон Фармон қачон қабул қилинган?","a":"2026 йил 26 майда қабул қилинган."},{"q":"ПФ–100-сон Фармоннинг асосий мақсади нима?","a":"Кичик бизнес субъектларининг ўсиши учун қулай шароитлар яратиш, солиқ режимини соддалаштириш, солиқ маъмуриятчилигини такомиллаштириш ва тадбиркорлик фаолиятини рағбатлантириш."},{"q":"Фармон билан қандай асосий йўналишлар белгиланган?","a":"Бизнес ўсишини рағбатлантириш, умумий солиқ режимига ўтишни юмшатиш, кичик ва ўрта бизнесни қўллаб-қувватлаш, соддалаштирилган ҚҚС тартибини жорий этиш ҳамда маъмурий юкни камайтириш."},{"q":"Фармонда солиқ базасини кенгайтириш бўйича қандай ёндашув белгиланган?","a":"Асосий солиқ ставкаларини оширмасдан, шаффоф солиқ базасини кенгайтириш белгиланган."},{"q":"Солиқ маъмуриятчилигини такомиллаштиришда нималарга эътибор қаратилган?","a":"Рақамли сервислардан фойдаланиш, солиқ хавфига асосланган назоратни ривожлантириш ва солиқ солишда адолатлилик тамойилини таъминлаш."},{"q":"2026 йил 1 июндан умумбелгиланган солиқ режимига ўтишнинг чегаравий миқдори қанча этиб белгиланди?","a":"Базавий ҳисоблаш миқдорининг (БҲМ) 12 000 баравари этиб белгиланди."},{"q":"Фармонга асосан меҳмонхона ва умумий овқатланиш соҳасига қандай енгиллик берилган?","a":"Ушбу соҳалардаги тадбиркорлик субъектларига алкоголь ва тамаки маҳсулотларини сотишда нақд пул тўловларини қабул қилишга рухсат берилган."},{"q":"Меҳмонхона ва умумий овқатланиш субъектларида рақамли маркировкага оид қандай тартиб белгиланган?","a":"Алкоголь, пиво, тамаки маҳсулотлари, сув ва салқин ичимликлар харид қилинганда, уларнинг рақамли маркировка кодлари ушбу субъектларда якуний истеъмолга реализация қилинган деб эътироф этилади."},{"q":"Умумий овқатланиш соҳасида ходимларни ишга расмийлаштириш бўйича қандай қулайлик жорий этилади?","a":"Айрим тоифадаги ходимларни меҳнат органларининг мобил иловаси орқали шу куннинг ўзида, муайян муддатга соддалаштирилган тартибда расмийлаштириш ва иш ҳақини тўлаш имконияти жорий этилади."},{"q":"Умумий овқатланиш соҳасида тўланган ҚҚСнинг қанча қисми қайтарилади?","a":"Тўланган ҚҚС суммасининг 40 фоизи қайтарилади. Бунда тушумнинг нақд пулсиз шаклдаги улуши инобатга олинмайди. Бироқ ҚҚСнинг 6 фоизлик соддалаштирилган тартибини танлаган субъектларга ушбу қайтариш механизми қўлланмайди."},{"q":"Савдо, хизмат кўрсатиш ва умумий овқатланиш объектларига туташ ҳудудлардан фойдаланиш учун ижара тўлови қандай белгиланади?","a":"Ижара тўлови Солиқ кодексида белгиланган тартибда аниқланадиган ер солиғининг бир баравари миқдорида белгиланади."},{"q":"2027 йил 1 январдан алкоголь маҳсулотларини сотиш ҳуқуқи учун йиғим бўйича қандай ўзгариш бўлади?","a":"Чакана сотиш ва умумий овқатланиш корхоналари томонидан реализация қилиш ҳуқуқи учун йиғимлар бирлаштирилади, йиғим ставкаси БҲМнинг 10 фоизи миқдорида белгиланади."},{"q":"2027 йилдан 1 000 квадрат метрдан ортиқ мол-мулкни ижарага беришда қандай енгиллик белгиланган?","a":"Тадбиркорлик субъектларига умумий майдони 1 000 квадрат метрдан кўп бўлган мол-мулк ижарага берилганда, солиқ солиш мақсадида ижара тўловининг энг кам ставкалари қўлланмайди. Тошкент шаҳри бундан мустасно."},{"q":"Бухгалтерия хизматлари ва солиқ маслаҳатчиларига оид қандай солиқ енгиллиги белгиланган?","a":"2027 йил 1 январдан кичик бизнес субъектларига бухгалтерия ҳисобини юритувчи ташкилотлар ва солиқ маслаҳатчиларини жалб қилиш харажатларини икки бараварга оширган ҳолда чегириш ҳуқуқи берилади. тартиб"},{"q":"ҚҚСни ҳисоблаш ва тўлашнинг соддалаштирилган тартиби қайси муддатга жорий этилган?","a":"2026 йил 1 июндан 2030 йил 1 январга қадар жорий этилган."},{"q":"Қайси тадбиркорлик субъектлари ҚҚСнинг соддалаштирилган тартибини танлаши мумкин?","a":"Асосий фаолият тури умумий овқатланиш, савдо ёки хизмат кўрсатиш бўлган тадбиркорлик субъектлари ихтиёрий равишда ушбу тартибни танлаши мумкин. Давлат улуши 50 фоиз ва ундан юқори бўлган корхоналар ҳамда йирик солиқ тўловчилар бундан мустасно."},{"q":"Соддалаштирилган тартибда ҚҚС ставкаси неча фоиз этиб белгиланган?","a":"Товарлар ва хизматларни реализация қилиш бўйича барча айланмаларга нисбатан 6 фоиз."},{"q":"ҚҚСнинг соддалаштирилган тартибини қўлловчилар учун фойда солиғи ставкаси қанча?","a":"Фойда солиғи ставкаси 0 фоиз этиб белгиланади ва фойда солиғи ҳисоботини тақдим этиш мажбурияти бекор қилинади."},{"q":"Соддалаштирилган тартибда харид қилинган товарлар бўйича тўланган ҚҚСни ҳисобга олиш мумкинми?","a":"Йўқ. Харид қилинган товарлар ва хизматлар бўйича тўланган ҚҚСни ҳисобга олиш ҳуқуқи берилмайди."},{"q":"Соддалаштирилган ҚҚС тартибида умумбелгиланган тартибдаги ҚҚС имтиёзлари қўлланадими?","a":"Йўқ. Умумбелгиланган тартибда назарда тутилган ҚҚС имтиёзлари, преференциялар ва тўланган солиқнинг бир қисмини қайтариш тартиби қўлланмайди."},{"q":"Соддалаштирилган тартибга ўтилганда ҚҚС бўйича мавжуд салбий фарқ суммаси нима бўлади?","a":"ҚҚС бўйича мавжуд салбий фарқ суммаси ҳисобдан чиқарилади."},{"q":"Соддалаштирилган тартибдаги тадбиркордан товар сотиб олган харидор ҚҚСни ҳисобга олиши мумкинми?","a":"Ҳа. Бундай тадбиркорлик субъектларидан товар ёки хизматлар сотиб олган харидорларга ҚҚС суммасини ҳисобга олиш ҳуқуқи берилади."},{"q":"ҚҚСнинг соддалаштирилган тартибига ўтиш ёки ундан воз кечиш қачон амалга оширилади?","a":"Тадбиркорлик субъекти хабарнома юборган ойдан кейинги ойнинг биринчи санасидан амалга оширилади."},{"q":"Соддалаштирилган тартибдан умумбелгиланган тартибга қайтганда товар-моддий захиралар бўйича ҚҚСни ҳисобга олиш мумкинми?","a":"Ҳа. Ўтиш санасида балансда мавжуд товар-моддий захиралар ва узоқ муддатли активлар қолдиқларининг баланс қийматида ҳисобга олинган ҚҚС суммаларини белгиланган тартибда ҳисобга олиш мумкин."},{"q":"Электрон ҳисобварақ-фактура ва харид чекларида қандай ўзгариш назарда тутилган?","a":"ҚҚСни 6 фоизлик ставка бўйича ҳисоблаш ва унинг алоҳида ҳисобини юритиш тизимини жорий этиш белгиланган."},{"q":"ҚҚС тўловчиси гувоҳномаси қандай мақсадда берилади?","a":"Фақат ҚҚС тўловчиларининг ҳисобини юритиш мақсадида берилади ва таъсир чораларини белгилашга асос бўлмайди."},{"q":"ҚҚС тўловчиси гувоҳномасига нисбатан қандай чеклов бекор қилинган?","a":"ҚҚС тўловчиси гувоҳномасини вақтинча тўхтатиб туриш тартиби бекор қилинган."},{"q":"Товарларни импорт қилувчи шахсларни ҚҚС тўловчиси деб эътироф этишда қандай ўзгариш белгиланган?","a":"Импортни амалга оширувчи юридик шахслар, якка тартибдаги тадбиркорлар ва ўзини ўзи банд қилган шахсларни фақат импорт фаолияти сабабли мажбурий тартибда ҚҚС тўловчиси деб эътироф этиш бекор қилинган."},{"q":"2027 йил 1 январдан солиқ хавфи паст бўлган ҚҚС тўловчилари учун қандай тартиб белгиланган?","a":"Солиқ хавфи паст бўлган ҳолларда ҚҚСнинг салбий фарқини қайтариш жараёнида инсон омили иштирокидаги амалиётдан воз кечилади."},{"q":"ҚҚС бўйича қанча миқдордаги салбий фарқ автоматик қайтарилади?","a":"10 миллион сўмгача бўлган ҚҚС салбий фарқ суммалари солиқ тўловчининг аризасисиз автоматик қайтарилади. Ушбу суммани қоплаш билан боғлиқ солиқ текширувлари ўтказилмайди."},{"q":"2026 йил 1 октябрга қадар ҚҚС бўйича қандай янги тизимни жорий этиш белгиланган?","a":"Электрон ҳисобварақ-фактуралар ва солиқ ҳисоботларининг хавф даражасини реал вақт режимида баҳолаш асосида ҚҚСнинг салбий фарқини автоматик қайтариш тизимини жорий этиш белгиланган."},{"q":"ПФ–100-сон Фармонга асосан кичик бизнес субъектларига солиққа оид ҳуқуқбузарлик аломатларини мустақил тузатиш имконияти қайси санага қадар берилган?","a":"2028 йил 1 январга қадар."},{"q":"Солиқ хавфи суммаси қанча бўлганда кичик бизнес субъектида солиқ аудити ўтказилмайди?","a":"Солиқ хавфи суммаси 500 миллион сўмгача бўлганда, Фармоннинг 11-бандида назарда тутилган тартиб доирасида солиқ аудити ўтказилмайди."},{"q":"Солиқ хавфи суммаси қанча бўлганда сайёр солиқ текшируви ўтказилмайди?","a":"Солиқ хавфи суммаси 100 миллион сўмгача бўлганда, Фармоннинг 11-бандидаги тартиб доирасида сайёр солиқ текшируви ўтказилмайди."},{"q":"Камерал солиқ текширувида банк ҳисобварақлари бўйича қандай енгиллик белгиланган?","a":"2026 йил 1 июлдан камерал солиқ текшируви талабномасига тушунтириш ёки тузатишлар тақдим этилганда, банк ҳисобварақлари бўйича операцияларни фаоллаштириш жараёнини тўлиқ автоматлаштириш белгиланган."},{"q":"Фармон ижросини самарали ташкил қилиш учун шахсан жавобгар этиб ким белгиланган?","a":"Ўзбекистон Республикаси Солиқ қўмитаси раиси белгиланган."},{"q":"Умумий овқатланиш корхонаси ҚҚСнинг 6 фоизлик соддалаштирилган тартибига ўтди. Корхона тўланган ҚҚСнинг 40 фоизини қайтариб олиши мумкинми?","a":"Йўқ. Чунки соддалаштирилган тартибни танлаган тадбиркорларга умумбелгиланган тартибдаги тўланган ҚҚСнинг бир қисмини қайтариш механизми қўлланмайди."},{"q":"Савдо корхонаси 15 октябрь куни соддалаштирилган ҚҚС тартибига ўтиш учун хабарнома юборди. Ушбу тартиб қачондан қўлланади?","a":"1 ноябрдан бошлаб."},{"q":"Кичик бизнес субъектида солиқ хавфи суммаси 80 миллион сўм бўлса, солиқ аудити ёки сайёр текширув ўтказиладими?","a":"Агар субъект Фармоннинг 11-бандидаги шартларга мувофиқ келса, белгиланган муддат давомида ушбу хавф асосида солиқ аудити ҳам, сайёр солиқ текшируви ҳам ўтказилмайди. Субъектга ҳуқуқбузарлик аломатларини мустақил тузатиш имконияти берилади."},{"q":"Тадбиркорда ҚҚС бўйича 8 миллион сўм салбий фарқ мавжуд. Уни қайтариш учун ариза бериш талаб этиладими?","a":"Йўқ. Фармонга мувофиқ, 10 миллион сўмгача бўлган салбий фарқ суммаларини аризасиз, автоматик қайтариш тартиби белгиланган."}];
+if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const sampleText=`1. Savol: O‘zingiz haqingizda gapirib bering.
+Javob: Ismim ..., ma’lumotim ..., tajribam ... . Men mas’uliyatli, tartibli va yangi bilimlarni tez o‘zlashtiradigan insonman.
+
+2. Savol: Nima uchun ushbu lavozimni tanladingiz?
+Javob: Bu lavozim mening bilim va ko‘nikmalarimga mos. O‘z bilimimni amalda qo‘llab, jamoaga foyda keltirishni va kasbiy rivojlanishni xohlayman.
+
+3. Savol: Kuchli tomonlaringiz nimalar?
+Javob: Mas’uliyatlilik, intizom, muloqot qila olish va vazifani oxirigacha bajarish. Kamchiliklarim ustida ham muntazam ishlayman.`;
+$('sample').onclick=()=>{$('raw').value=sampleText;$('fileStatus').textContent='Namuna kiritildi. Uni o‘zingizga moslab tahrirlang.'};
+$('loadBank').onclick=()=>{
+ items=embeddedBank.map(x=>({q:x.q,a:x.a}));results={};
+ $('raw').value='PDFdan tayyorlangan 240 ta savol-javob yuklandi. Buxgalteriya: 100 ta. Soliq qonunchiligi: 100 ta. PF–100-son Farmon bo‘yicha qo‘shimcha savollar: 40 ta.';
+ $('fileStatus').textContent='PDFdagi barcha 240 ta savol-javob dasturga tayyor yuklandi. Faylni qayta tanlash shart emas.';
+ $('parseStatus').textContent='Tayyor! Bo‘limni tanlang va “Imtihonni boshlash” tugmasini bosing.';
+ renderStats();$('exam').classList.add('hidden');$('examEmpty').classList.remove('hidden');
+};
+$('clear').onclick=()=>{$('raw').value='';items=[];results={};renderStats();$('parseStatus').textContent='Matn tozalandi.';$('exam').classList.add('hidden');$('examEmpty').classList.remove('hidden')};
+$('load').onclick=async()=>{
+ const f=$('file').files[0]; if(!f){$('fileStatus').textContent='Avval PDF, DOCX yoki TXT fayl tanlang.';return}
+ $('fileStatus').textContent='Fayl o‘qilmoqda...';
+ try{
+  let text='';
+  if(f.name.toLowerCase().endsWith('.pdf')){
+   if(!window.pdfjsLib) throw new Error('PDF kutubxonasi yuklanmadi. Internetga ulaning yoki matnni qo‘lda joylang.');
+   const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+   for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p);const c=await page.getTextContent();text+=c.items.map(x=>x.str).join(' ')+'\\n'}
+  }else if(f.name.toLowerCase().endsWith('.docx')){
+   if(!window.mammoth) throw new Error('Word kutubxonasi yuklanmadi. Internetga ulaning yoki matnni qo‘lda joylang.');
+   text=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value;
+  }else{text=await f.text()}
+  $('raw').value=text;$('fileStatus').textContent='Fayl matni olindi. Endi “Savollarni ajratish” tugmasini bosing. Agar savol-javoblar ajralmasa, matnni qo‘lda tahrirlang.';
+ }catch(e){$('fileStatus').textContent='Xatolik: '+e.message}
+};
+function parseText(text){
+ const lines=text.replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+ const out=[];let q='',a='',mode='';
+ function push(){if(q.trim())out.push({q:q.trim().replace(/^(savol\s*[:\-]?\s*)/i,''),a:a.trim().replace(/^(javob\s*[:\-]?\s*)/i,'' )});q='';a='';}
+ for(let line of lines){
+  let clean=line.replace(/^\s*(?:\d+[\).:\-]\s*)/,'');
+  const qm=clean.match(/^(?:savol|question|q)\s*[:.)\-]\s*(.*)$/i);
+  const am=clean.match(/^(?:javob|answer|a)\s*[:.)\-]\s*(.*)$/i);
+  if(qm){push();q=qm[1];mode='q';}
+  else if(am){a=am[1];mode='a';}
+  else if(/^\d+[\).]\s+/.test(line) && !q){q=clean;mode='q'}
+  else if(!q){q=clean;mode='q'}
+  else if(mode==='a'){a+=(a?' ':'')+clean}
+  else if(!a && /[?？]\s*$/.test(q)){a=clean;mode='a'}
+  else {q+=(q?' ':'')+clean}
+ }
+ push();
+ // Fallback for text structured as alternating question and answer paragraphs.
+ if(out.length<2){
+  const blocks=text.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean), alt=[];
+  for(let i=0;i<blocks.length;i+=2) if(blocks[i+1]) alt.push({q:blocks[i].replace(/^\d+[\).]\s*/,''),a:blocks[i+1]});
+  if(alt.length>out.length)return alt;
+ }
+ return out.filter(x=>x.q.length>2);
+}
+$('parse').onclick=()=>{
+ items=parseText($('raw').value);
+ if(!items.length){$('parseStatus').textContent='Savollar aniqlanmadi. Matnni “Savol: ... / Javob: ...” ko‘rinishida tartiblang.';renderStats();return}
+ results={};$('parseStatus').textContent=items.length+' ta savol topildi. Birinchi savollarni tekshirib, ajratish to‘g‘riligiga ishonch hosil qiling.';
+ renderStats();$('examEmpty').classList.remove('hidden');$('exam').classList.add('hidden');
+};
+function renderStats(){$('stats').innerHTML='';[['Savollar',items.length],['Javoblangan',Object.keys(results).length]].forEach(([k,v])=>{const s=document.createElement('span');s.className='pill';s.textContent=k+': '+v;$('stats').appendChild(s)});updateResultStats()}
+function updateResultStats(){const vals=Object.values(results);$('doneCount').textContent='Javob berilgan: '+vals.length;$('correctCount').textContent='Yaxshi javob: '+vals.filter(x=>x.correct===true || (x.correct===undefined && x.ratio>=.30)).length;$('weakCount').textContent='Qaytarish kerak: '+vals.filter(x=>x.correct===false || (x.correct===undefined && x.ratio<.30)).length;$('score').textContent='Yaxshi javob: '+vals.filter(x=>x.correct===true || (x.correct===undefined && x.ratio>=.30)).length+'/'+Math.max(items.length,1)}
+function startExam(){
+ if(!items.length){$('parseStatus').textContent='Avval savol-javoblarni yuklang va ajrating.';return}
+ let base=items.map((_,i)=>i),mode=$('mode').value,category=$('category').value;
+ if(category==='accounting')base=base.filter(i=>i<100);
+ if(category==='tax')base=base.filter(i=>i>=100 && i<200);
+ if(category==='pf100')base=base.filter(i=>i>=200);
+ if(mode==='random')base.sort(()=>Math.random()-.5);
+ if(mode==='weak'){base=base.filter(i=>results[i]&&results[i].ratio<.30);if(!base.length){$('parseStatus').textContent='Hozircha qaytariladigan xato savol yo‘q. Avval oddiy imtihon qiling.';return}}
+ order=base;pos=0;$('examEmpty').classList.add('hidden');$('exam').classList.remove('hidden');showCurrent();
+}
+function showCurrent(){if(!order.length)return;const i=order[pos],it=items[i];$('counter').textContent='Savol '+(pos+1)+' / '+order.length;document.querySelector('.qnum').textContent=i<100?'BUXGALTERIYA HISOBI':i<200?'SOLIQ QONUNCHILIGI':'PF–100-SON FARMON';$('question').textContent=it.q;$('userAnswer').value='';$('feedback').textContent='';$('modelAnswer').classList.add('hidden');$('modelAnswer').textContent='';$('bar').style.width=(pos/order.length*100)+'%';$('micStatus').textContent='';updateResultStats()}
+$('start').onclick=()=>{conversationMode=false;conversationSerial++;setAvatarState('idle');startExam()};
+$('liveConversation').onclick=startLiveConversation;
+$('next').onclick=()=>{if(pos<order.length-1){pos++;showCurrent()}else{$('bar').style.width='100%';$('feedback').textContent='Bu tur tugadi. Natijalarni ko‘rib, xato savollarni qayta mashq qiling.';updateResultStats()}};
+$('showAnswer').onclick=()=>{const it=items[order[pos]];$('modelAnswer').textContent=it.a||'Bu savol uchun namunaviy javob topilmadi. Javobni faylda “Javob: ...” deb belgilang.';$('modelAnswer').classList.remove('hidden')};
+function toCyrillic(input){
+ let x=String(input||'').toLocaleLowerCase('uz').normalize('NFC');
+ x=x.replace(/[oо][’'`‘ʻʼʻ]/g,'ў').replace(/o[’'`‘ʻʼ]/g,'ў').replace(/g[’'`‘ʻʼ]/g,'ғ');
+ const pairs=[['sh','ш'],['ch','ч'],['yo','ё'],['yu','ю'],['ya','я'],['ye','е'],['ng','нг'],['ts','ц']];
+ for(const [a,b] of pairs)x=x.replaceAll(a,b);
+ const map={a:'а',b:'б',d:'д',e:'е',f:'ф',g:'г',h:'ҳ',i:'и',j:'ж',k:'к',l:'л',m:'м',n:'н',o:'о',p:'п',q:'қ',r:'р',s:'с',t:'т',u:'у',v:'в',x:'х',y:'й',z:'з',w:'в',c:'к'};
+ x=x.replace(/[a-z]/g,ch=>map[ch]||ch);
+ return x.replace(/ъ/g,'').replace(/ь/g,'').replace(/ё/g,'е');
+}
+const stopWords=new Set(('ва ёки ҳам учун билан бўйича бу шу у уни унда ундан унга каби қандай нима нимага деганда ҳисобида ҳисоблаш ҳисобини ҳисоботи асосида асосий керак мумкин мавжуд бўлган бўлиб ҳисобланади акс эттиради акс эттирилади тизим бир бирга тегишли бошқа томони томонида орқали давомида кейин олдин эса деб дан га ни да на учуннинг шунингдек ташкил этади ташкил этувчи улар уларнинг бунинг корхона корхонанинг шахс шахслар ташкилот ташкилотлар масалан демак бўлса учундир яъни вада ҳамда қилинади қилинадиган амалга ошириш бериш беришда бўйичага').split(' '));
+const synonyms=[
+ ['даромад','тушум','кирим','фойда'],['харажат','сарф','чиқим'],['мажбурият','қарз','қарздорлик'],['актив','ресурс','мол мулк'],['дебиторлик','олинадиган'],['кредиторлик','тўланадиган'],['иш ҳақи','маош','ойлик'],['касса','нақд пул'],['банк ҳисобварағи','ҳисоб рақам','банкдаги пул'],['солиқ тўловчи','солиқ субъекти'],['солиқ базаси','солиқ солинадиган база'],['бухгалтерия баланси','баланс'],['ҳужжат','расмийлаштириш'],['фойда','даромаддан харажатни айириш'],['аванс','олдиндан тўлов'],['инвентаризация','санаб чиқиш','солиштириш']
+].map(group=>group.map(toCyrillic));
+const conceptGroups=[
+ ['даромад','тушум','кирим'],['харажат','сарф','чиқим'],['мажбурият','қарз','қарздорлик'],
+ ['актив','ресурс'],['ишҳақи','маош','оклад','зарплата','ҳақ'],['касса','нақд'],
+ ['аванс','бўнак'],['инвентаризация','санаш'],['фойда','даромад'],['баланс','бухгалтериябаланси']
+];
+function concept(w){for(const group of conceptGroups){if(group.includes(w))return group[0]}return w}
+function rootWord(w){
+ let t=w;const suffixes=['ларидан','ларининг','ларимиз','ларингиз','ларини','ларига','ларида','ларидан','лардан','ларни','ларнинг','ларга','ларда','нинг','имиз','ингиз','лари','лари','лар','дан','нинг','нинг','ларга','лари','ни','га','да','дан','дир','миз','сиз','ман','сан','нинг','си','и'];
+ for(const suf of suffixes){if(t.length-suf.length>=4 && t.endsWith(suf)){t=t.slice(0,-suf.length);break}}
+ return t;
+}
+function tokenizeMeaning(txt){
+ const clean=toCyrillic(txt).replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
+ return clean.split(' ').map(rootWord).filter(w=>w.length>=3&&!stopWords.has(w));
+}
+function getEquivalentTokens(word,tokenSet){
+ const matched=new Set([word]);
+ for(const group of synonyms){if(group.some(term=>term.includes(' ') ? false : term===word)){for(const term of group)if(!term.includes(' ')&&tokenSet.has(term))matched.add(term)}}
+ // A narrow family of common accountant terms is treated as related wording.
+ return [...matched];
+}
+function evaluateAnswer(user,model){
+ const m=tokenizeMeaning(model),u=tokenizeMeaning(user),uSet=new Set(u),uConcepts=new Set(u.map(concept));
+ const unique=[...new Set(m)];
+ if(!unique.length)return {ratio:0,matched:[],keys:[]};
+ let hit=0,weight=0;const matched=[];
+ for(const w of unique){const wt=w.length>=7?1.3:w.length>=5?1.1:1;weight+=wt;
+  let ok=uSet.has(w)||uConcepts.has(concept(w));
+  if(!ok){for(const group of synonyms){const simple=group.filter(x=>!x.includes(' '));if(simple.includes(w)&&simple.some(x=>uSet.has(rootWord(x)))){ok=true;break}}}
+  if(!ok){ // permit close spellings caused by speech recognition, but avoid broad matching
+   for(const uw of uSet){if(Math.min(w.length,uw.length)>=5&&editDistanceAtMostOne(w,uw)){ok=true;break}}
+  }
+  if(ok){hit+=wt;matched.push(w)}
+ }
+ // Reward an answer that states the central relationship or formula from the source.
+ let phraseBonus=0;const mNorm=toCyrillic(model),uNorm=toCyrillic(user);
+ const phraseChecks=[[/актив.*мажбурият|мажбурият.*актив/,'актив ва мажбуриятлар'],[/дебет.*кредит|кредит.*дебет/,'дебет ва кредит'],[/даромад.*харажат|харажат.*даромад/,'даромад ва харажат'],[/ҳужжат.*йиғ|йиғ.*ҳужжат/,'ҳужжатлар асосида йиғиш']];
+ for(const [re,label] of phraseChecks){if(re.test(mNorm)&&re.test(uNorm))phraseBonus+=0.08}
+ const ratio=Math.min(1,(hit/weight)+phraseBonus);
+ return {ratio,matched,keys:unique};
+}
+function editDistanceAtMostOne(a,b){if(a===b)return true;if(Math.abs(a.length-b.length)>1)return false;let i=0,j=0,err=0;while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue}if(++err>1)return false;if(a.length>b.length)i++;else if(b.length>a.length)j++;else{i++;j++}}if(i<a.length||j<b.length)err++;return err<=1}
+$('check').onclick=()=>{
+ const idx=order[pos],it=items[idx],user=$('userAnswer').value.trim(),model=(it.a||'').trim();
+ if(!user){$('feedback').textContent='Avval javob yozing yoki mikrofon orqali ayting.';return}
+ if(!model){$('feedback').textContent='Namunaviy javob topilmadi — javobni qo‘lda taqqoslang.';return}
+ const ev=evaluateAnswer(user,model),ratio=ev.ratio;
+ results[idx]={user,ratio,matched:ev.matched,keys:ev.keys};
+ let msg='Mazmun mosligi taxmini: '+Math.round(ratio*100)+'%. ';
+ msg+=ratio>=.30?'Javob qabul qilindi — asosiy tushunchalar mos.':ratio>=.18?'Qisman to‘g‘ri — asosiy fikr bor, lekin yana bir-ikki muhim tushunchani qo‘shing.':'Javob hali yetarli emas — namunaviy javobni ko‘rib, asosiy mazmunni qayta aytib ko‘ring.';
+ const hitNames=ev.matched.slice(0,8).join(', ');
+ $('feedback').className='status '+(ratio>=.30?'good':'bad');$('feedback').textContent=msg+(hitNames?' Tanilgan tushunchalar: '+hitNames+'.':'');
+ $('modelAnswer').textContent='PDFdagi namunaviy javob: '+model;$('modelAnswer').classList.remove('hidden');renderStats();
+};
+function preferredVoice(){
+ const requested=$('lang').value,choice=$('voiceChoice').value;
+ if(choice.startsWith('edge-'))return null;
+ if(choice!=='auto'){const v=availableVoices[Number(choice)];if(v)return v}
+ if(!availableVoices.length)return null;
+ const langBase=requested.split('-')[0].toLowerCase();
+ function score(v){const name=(v.name+' '+v.voiceURI).toLowerCase(),lang=(v.lang||'').toLowerCase();let n=0;
+  if(lang===requested.toLowerCase())n+=100;else if(lang.startsWith(langBase))n+=80;
+  if(/natural|neural|online|aria|jenny|sonia|natasha|ava|andrew|guy|zira|google/.test(name))n+=35;
+  if(/microsoft/.test(name))n+=8;if(/desktop|compact/.test(name))n-=12;
+  if(requested==='uz-UZ'&&/^uz/.test(lang))n+=200;
+  if(requested==='uz-UZ'&&/^(tr|az)/.test(lang))n+=65;
+  if(requested==='uz-UZ'&&/^ru/.test(lang))n+=55;
+  return n;
+ }
+ return [...availableVoices].sort((a,b)=>score(b)-score(a))[0];
+}
+function setAvatarState(state){
+ const stage=$('holoStage');if(!stage)return;
+ stage.classList.toggle('is-talking',state==='talking');
+ stage.classList.toggle('is-listening',state==='listening');
+ const label=$('avatarStatusText');
+ if(label)label.textContent=state==='talking'?'GAPIRYAPMAN · SAVOLNI O‘QIMOQDAMAN':state==='listening'?'SIZNI TINGLAYAPMAN · GAPIRING':'TIZIM TAYYOR · SIZNI KUTYAPMAN';
+}
+function browserSpeakText(text, afterSpeak=null){
+ if(!('speechSynthesis' in window)){$('voiceStatus').textContent='Bu brauzer ovozli o‘qishni qo‘llamaydi.';return}
+ const u=new SpeechSynthesisUtterance(text),v=preferredVoice();
+ if(v){u.voice=v;u.lang=v.lang||$('lang').value}else u.lang=$('lang').value;
+ u.rate=.91;u.pitch=1.0;u.volume=1;
+ u.onstart=()=>{setAvatarState('talking');$('voiceStatus').textContent='Brauzer ovozi: '+(v?(v.name+' · '+v.lang):u.lang)};
+ u.onend=()=>{if(!listening)setAvatarState('idle');$('voiceStatus').textContent=v?'Brauzer ovozi: '+v.name+' ('+v.lang+').':'Brauzer ovozi tugadi.';if(typeof afterSpeak==='function'&&conversationMode)afterSpeak()};
+ u.onerror=e=>{setAvatarState('idle');$('voiceStatus').textContent='Ovoz xatosi: '+e.error+'. Ovoz sozlamasini tekshiring.'};
+ speechSynthesis.speak(u);
+}
+const ttsBlobCache = new Map();
+const TTS_CACHE_MAX = 48;
+function selectedEdgeVoice(){return $('voiceChoice').value==='edge-madina'?'uz-UZ-MadinaNeural':'uz-UZ-SardorNeural'}
+function requestTtsBlob(text, voice){
+ const key=voice+'\n'+String(text);
+ if(ttsBlobCache.has(key))return ttsBlobCache.get(key);
+ const promise=fetch('/tts',{method:'POST',headers:{'Content-Type':'application/json','X-Jarvis-Token':window.JARVIS_ACCESS_TOKEN||''},body:JSON.stringify({text:String(text),voice})})
+  .then(async r=>{if(!r.ok){let extra='';try{extra=(await r.json()).error||''}catch(e){}throw new Error(extra||('HTTP '+r.status))}return r.blob()})
+  .catch(err=>{ttsBlobCache.delete(key);throw err});
+ ttsBlobCache.set(key,promise);
+ while(ttsBlobCache.size>TTS_CACHE_MAX){const first=ttsBlobCache.keys().next().value;if(first===key)break;ttsBlobCache.delete(first)}
+ return promise;
+}
+function warmTts(text){
+ const choice=$('voiceChoice').value;
+ if(!choice.startsWith('edge-'))return;
+ requestTtsBlob(text,selectedEdgeVoice()).catch(()=>{});
+}
+function stopCurrentSpeech(){
+ if('speechSynthesis'in window)speechSynthesis.cancel();
+ if(ttsAbort){try{ttsAbort.abort()}catch(e){}ttsAbort=null}
+ if(currentAudio){try{currentAudio.pause();currentAudio.currentTime=0}catch(e){}currentAudio=null}
+ if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
+}
+function speakText(text, isTest=false, afterSpeak=null){
+ const serial=++speechSerial;
+ stopCurrentSpeech();
+ const choice=$('voiceChoice').value;
+ if(!choice.startsWith('edge-')){browserSpeakText(text,afterSpeak);return}
+ const voice=selectedEdgeVoice();
+ $('voiceStatus').textContent='Tabiiy ovoz tayyorlanmoqda…';
+ requestTtsBlob(text,voice).then(blob=>{
+  if(serial!==speechSerial)return;
+  currentAudioUrl=URL.createObjectURL(blob);const audio=new Audio(currentAudioUrl);currentAudio=audio;
+  audio.preload='auto';
+  audio.onplay=()=>{setAvatarState('talking');$('voiceStatus').textContent='Tabiiy Microsoft ovozi: '+(voice==='uz-UZ-SardorNeural'?'Sardor':'Madina')+' · o‘zbekcha'};
+  audio.onended=()=>{
+   if(serial!==speechSerial)return;
+   setAvatarState('idle');$('voiceStatus').textContent='Tabiiy o‘zbekcha ovoz tayyor.';
+   currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
+   if(typeof afterSpeak==='function'&&conversationMode)afterSpeak();
+  };
+  audio.onerror=()=>{
+   if(serial!==speechSerial)return;
+   setAvatarState('idle');$('voiceStatus').textContent='Tabiiy audio ijro etilmadi. Internetni tekshiring.';
+   currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
+   if(conversationMode){conversationMode=false;$('micStatus').textContent='Ovoz ishlamadi. Start_JARVIS.bat oynasi va internetni tekshiring.'}
+  };
+  audio.play().catch(err=>{
+   if(serial!==speechSerial)return;
+   setAvatarState('idle');$('voiceStatus').textContent='Audio ijrosi bloklandi. Avval “Ovoz namunasini eshitish” tugmasini bosing.';
+   currentAudio=null;if(currentAudioUrl){URL.revokeObjectURL(currentAudioUrl);currentAudioUrl=null}
+   if(conversationMode){conversationMode=false;$('micStatus').textContent='Ovoz boshlanmadi. Ovoz namunasini eshiting va suhbatni qayta boshlang.'}
+  });
+ }).catch(err=>{
+  if(serial!==speechSerial||err.name==='AbortError')return;
+  setAvatarState('idle');$('voiceStatus').textContent='Tabiiy ovoz ulanilmadi: '+err.message+'. Internet va Start_JARVIS.bat oynasini tekshiring.';
+  if(conversationMode){conversationMode=false;$('micStatus').textContent='Tabiiy ovoz xizmati javob bermadi. Ulanishni tuzatib, suhbatni qayta boshlang.'}
+ });
+}
+function refreshVoices(){
+ if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Brauzeringizda ichki ovoz funksiyasi mavjud emas.';return}
+ availableVoices=speechSynthesis.getVoices()||[];
+ const select=$('voiceChoice'),previous=select.value;
+ select.innerHTML='<option value="edge-sardor">Microsoft tabiiy o‘zbekcha — Sardor (erkak, onlayn)</option><option value="edge-madina">Microsoft tabiiy o‘zbekcha — Madina (ayol, onlayn)</option><option value="auto">Brauzer ovozi — avtomatik tanlash</option>';
+ const group=document.createElement('optgroup');group.label='Kompyuter/brauzer ovozlari';
+ availableVoices.forEach((v,i)=>{const op=document.createElement('option');op.value=String(i);op.textContent=v.name+' · '+v.lang+(v.default?' · standart':'');group.appendChild(op)});
+ if(availableVoices.length)select.appendChild(group);
+ const valid=[...select.options].some(o=>o.value===previous);select.value=valid?previous:'edge-sardor';
+ const uz=availableVoices.filter(v=>(v.lang||'').toLowerCase().startsWith('uz'));
+ $('voiceStatus').textContent='Tavsiya: Microsoft tabiiy o‘zbekcha Sardor ovozi. Buning uchun Start_JARVIS.bat orqali ilovani oching va internetni yoqing.'+(uz.length?' Kompyuterda ham o‘zbekcha ovoz bor: '+uz.map(v=>v.name).join(', ')+'.':'');
+}
+$('speak').onclick=()=>speakText($('question').textContent);
+$('testVoice').onclick=()=>speakText('Assalomu alaykum. Suhbat mashqini boshlaymiz. Savolni diqqat bilan tinglang va javobni o‘z so‘zingiz bilan ayting.',true);
+if('speechSynthesis'in window){refreshVoices();speechSynthesis.onvoiceschanged=refreshVoices;setTimeout(refreshVoices,500)}$('stop').onclick=()=>{conversationMode=false;conversationSerial++;speechSerial++;stopCurrentSpeech();if('speechSynthesis'in window)speechSynthesis.cancel();if(recognition&&listening){try{recognition.stop()}catch(e){}}listening=false;setAvatarState('idle');$('micStatus').textContent='Suhbat to‘xtatildi.';$('voiceStatus').textContent='JARVIS kutish rejimida.'};
+function addChatMessage(who, text){
+ const log=$('conversationLog');if(!log)return;
+ const d=document.createElement('div');d.className='chat-msg '+(who==='user'?'user':'jarvis');
+ const name=document.createElement('span');name.className='chat-who';name.textContent=who==='user'?'SIZ':'J.A.R.V.I.S.';
+ const body=document.createElement('span');body.textContent=text;d.append(name,body);log.appendChild(d);
+ while(log.children.length>32)log.removeChild(log.firstChild);log.scrollTop=log.scrollHeight;
+}
+const ANSWER_SILENCE_MS=10000;
+let answerSilenceTimer=null, noAnswerTimer=null, answerRoundToken=0;
+let answerTextAccumulated='', speechStarted=false, lastSpeechAt=0, listeningStartedAt=0;
+let currentSessionTranscript='', finalizingAnswer=false, manualStopRequested=false;
+function clearAnswerTimers(){if(answerSilenceTimer){clearTimeout(answerSilenceTimer);answerSilenceTimer=null}if(noAnswerTimer){clearTimeout(noAnswerTimer);noAnswerTimer=null}}
+function mergeTranscript(base, extra){
+ base=String(base||'').trim();extra=String(extra||'').trim();
+ if(!extra)return base;if(!base)return extra;if(base===extra||base.endsWith(extra))return base;
+ const a=base.split(/\s+/),b=extra.split(/\s+/);let overlap=0;
+ for(let n=Math.min(a.length,b.length,12);n>0;n--){if(a.slice(-n).join(' ').toLocaleLowerCase('uz')===b.slice(0,n).join(' ').toLocaleLowerCase('uz')){overlap=n;break}}
+ return (base+' '+b.slice(overlap).join(' ')).trim();
+}
+function scheduleSilenceCheck(token){
+ if(answerSilenceTimer)clearTimeout(answerSilenceTimer);
+ answerSilenceTimer=setTimeout(()=>{
+  if(token!==answerRoundToken||!conversationMode)return;
+  finalizingAnswer=true;
+  if(recognition&&listening){try{recognition.stop()}catch(e){finishAnswerRound(token)}}
+  else finishAnswerRound(token);
+ },ANSWER_SILENCE_MS);
+}
+function conversationalQuestion(){
+ if(!conversationMode||!order.length)return;
+ if(pos>=order.length){
+  conversationMode=false;setAvatarState('idle');
+  const msg='Bo‘lim tugadi.';addChatMessage('jarvis',msg);$('micStatus').textContent='Imtihon tugadi. Natijangiz ekranda.';$('feedback').textContent='Jonli suhbat yakunlandi.';return;
+ }
+ showCurrent();
+ const q=items[order[pos]].q;
+ addChatMessage('jarvis',q);$('micStatus').textContent='Savolni tinglang, keyin javob bering.';
+ speakText(q,false,()=>{
+  if(!conversationMode)return;
+  // While the user thinks and speaks, prepare the next short phrases/questions to cut latency.
+  warmTts('To‘g‘ri.');warmTts('Noto‘g‘ri.');
+  if(pos+1<order.length)warmTts(items[order[pos+1]].q);
+  setTimeout(()=>startListeningForAnswer(true),150);
+ });
+}
+function startLiveConversation(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){$('voiceStatus').textContent='Jonli suhbat uchun Chrome yoki Edge mikrofon orqali nutqni tanishi kerak.';return}
+ if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Bu brauzer ovoz chiqarishni qo‘llamaydi.';return}
+ conversationMode=true;listenRetry=0;recognitionError='';conversationSerial++;
+ $('conversationLog').innerHTML='';clearAnswerTimers();answerTextAccumulated='';speechStarted=false;finalizingAnswer=false;
+ startExam();if(!order.length){conversationMode=false;return}
+ conversationalQuestion();
+}
+function startListeningForAnswer(automatic=false, continuation=false){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){$('micStatus').textContent='Mikrofon orqali nutqni tanish bu brauzerda mavjud emas.';return}
+ // The ordinary non-live exam retains a simple one-shot mic mode.
+ if(!conversationMode){
+  if(listening&&recognition){try{recognition.stop()}catch(e){}return}
+  recognitionError='';recognition=new SR();recognition.lang=$('lang').value;recognition.interimResults=true;recognition.continuous=false;listening=true;setAvatarState('listening');$('micStatus').textContent='Gapiring...';
+  recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript+' ';$('userAnswer').value=t.trim()};
+  recognition.onerror=e=>{recognitionError=e.error;$('micStatus').textContent='Mikrofon xatosi: '+e.error};
+  recognition.onend=()=>{listening=false;setAvatarState('idle');$('micStatus').textContent=$('userAnswer').value.trim()?'Nutq qabul qilindi. Javobni tekshiring.':'Javob eshitilmadi. Mikrofon ruxsatini tekshiring.'};
+  try{recognition.start()}catch(e){listening=false;$('micStatus').textContent='Mikrofonni ishga tushirib bo‘lmadi: '+e.message}
+  return;
+ }
+ if(!continuation){
+  clearAnswerTimers();answerRoundToken++;answerTextAccumulated='';speechStarted=false;lastSpeechAt=Date.now();listeningStartedAt=Date.now();finalizingAnswer=false;manualStopRequested=false;$('userAnswer').value='';
+  const token=answerRoundToken;
+  noAnswerTimer=setTimeout(()=>{if(token!==answerRoundToken||!conversationMode||speechStarted)return;finalizingAnswer=true;if(recognition&&listening){try{recognition.stop()}catch(e){finishAnswerRound(token)}}else finishAnswerRound(token)},ANSWER_SILENCE_MS);
+ }else if(listening)return;
+ launchRecognitionSession(answerRoundToken);
+}
+function launchRecognitionSession(token){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!conversationMode||token!==answerRoundToken||listening||finalizingAnswer)return;
+ recognitionError='';currentSessionTranscript='';
+ const sessionParts=[];const baseAtStart=answerTextAccumulated;
+ const localRecognition=new SR();recognition=localRecognition;localRecognition.lang=$('lang').value;localRecognition.interimResults=true;localRecognition.continuous=true;listening=true;
+ setAvatarState('listening');$('micStatus').textContent='Javobingizni tinglayapman. 10 soniya sukutdan keyin baholayman.';
+ localRecognition.onresult=e=>{
+  if(token!==answerRoundToken)return;
+  for(let i=0;i<e.results.length;i++)sessionParts[i]=e.results[i][0].transcript;
+  currentSessionTranscript=sessionParts.filter(Boolean).join(' ').trim();
+  const combined=mergeTranscript(baseAtStart,currentSessionTranscript);
+  if(combined){$('userAnswer').value=combined;speechStarted=true;lastSpeechAt=Date.now();if(noAnswerTimer){clearTimeout(noAnswerTimer);noAnswerTimer=null}scheduleSilenceCheck(token)}
+ };
+ localRecognition.onerror=e=>{recognitionError=e.error;if(e.error!=='no-speech')$('micStatus').textContent='Mikrofon: '+e.error};
+ localRecognition.onend=()=>{
+  if(token!==answerRoundToken)return;
+  listening=false;setAvatarState('idle');
+  answerTextAccumulated=mergeTranscript(answerTextAccumulated,currentSessionTranscript);
+  $('userAnswer').value=answerTextAccumulated;
+  if(!conversationMode)return;
+  if(['not-allowed','service-not-allowed','audio-capture'].includes(recognitionError)){clearAnswerTimers();conversationMode=false;$('micStatus').textContent='Mikrofon ruxsati yo‘q yoki mikrofon band. Chrome/Edge sozlamasidan mikrofon ruxsatini bering.';return}
+  if(finalizingAnswer||manualStopRequested){finishAnswerRound(token);return}
+  const elapsed=Date.now()-(speechStarted?lastSpeechAt:listeningStartedAt);
+  if(elapsed>=ANSWER_SILENCE_MS){finishAnswerRound(token);return}
+  // Chrome/Edge sometimes ends a recognition session during a pause. Preserve what was heard
+  // and reopen the mic, while the 10-second silence clock keeps running.
+  setTimeout(()=>launchRecognitionSession(token),250);
+ };
+ try{localRecognition.start()}catch(e){listening=false;setAvatarState('idle');$('micStatus').textContent='Mikrofonni ishga tushirib bo‘lmadi: '+e.message;setTimeout(()=>{if(conversationMode&&token===answerRoundToken&&!finalizingAnswer)launchRecognitionSession(token)},500)}
+}
+function finishAnswerRound(token){
+ if(token!==answerRoundToken||!conversationMode)return;
+ clearAnswerTimers();finalizingAnswer=false;manualStopRequested=false;
+ if(recognition&&listening){try{recognition.stop()}catch(e){}return}
+ const answer=$('userAnswer').value.trim();
+ answerRoundToken++; // ignore any delayed onend/restart callback from this recording session
+ if(!answer){
+  if(listenRetry<1){listenRetry++;const currentQ=items[order[pos]].q;addChatMessage('jarvis','Javob eshitilmadi.');speakText('Javob eshitilmadi.',false,()=>{if(conversationMode)conversationalQuestion()});}
+  else{conversationMode=false;$('micStatus').textContent='Javob eshitilmadi. Mikrofonni tekshiring va qayta boshlang.';setAvatarState('idle')}
+  return;
+ }
+ listenRetry=0;processConversationalAnswer(answer);
+}
+function processConversationalAnswer(user){
+ if(!conversationMode||!order.length)return;
+ const spokenCommand=String(user).toLocaleLowerCase('uz').replace(/[’‘ʻ`]/g,"'").replace(/[.!?,]/g,' ').replace(/\s+/g,' ').trim();
+ if(/^(jarvis )?(to'xta|to'xtat|suhbatni to'xtat|yakunla|suhbatni tugat)( iltimos)?$/.test(spokenCommand)){
+  conversationMode=false;conversationSerial++;clearAnswerTimers();setAvatarState('idle');const bye='Suhbat to‘xtatildi.';addChatMessage('user',user);addChatMessage('jarvis',bye);speakText(bye);return;
+ }
+ if(/(savolni takrorla|qayta so'ra|yana bir marta|savolni qaytar)/.test(spokenCommand)){
+  addChatMessage('user',user);speakText(items[order[pos]].q,false,()=>{if(conversationMode)startListeningForAnswer(true)});return;
+ }
+ const idx=order[pos],it=items[idx],ev=evaluateAnswer(user,it.a||''),ratio=ev.ratio;
+ const correct=ratio>=.30 && (ev.matched.length>=2 || ev.keys.length<=4 && ev.matched.length>=1);
+ results[idx]={user,ratio,matched:ev.matched,keys:ev.keys,correct};
+ addChatMessage('user',user);renderStats();
+ const shortAnswer=(it.a||'').replace(/\s+/g,' ').trim();
+ const verdict=correct?'To‘g‘ri.':'Noto‘g‘ri.';
+ $('feedback').className='status '+(correct?'good':'bad');$('feedback').textContent=verdict;
+ if(!correct){$('modelAnswer').textContent='PDFdagi to‘g‘ri javob: '+shortAnswer;$('modelAnswer').classList.remove('hidden')}
+ else {$('modelAnswer').classList.add('hidden')}
+ addChatMessage('jarvis',verdict);
+ if(!correct)addChatMessage('jarvis','To‘g‘ri javob: '+shortAnswer);
+ const nextPos=pos+1;
+ speakText(verdict,false,()=>{
+  if(!conversationMode)return;
+  if(nextPos<order.length){pos=nextPos;conversationalQuestion()}
+  else{conversationMode=false;setAvatarState('idle');$('bar').style.width='100%';$('micStatus').textContent='Imtihon tugadi.';$('feedback').textContent+=' Natijangiz ekranda.'}
+ });
+}
+$('mic').onclick=()=>{if(conversationMode&&listening&&recognition){manualStopRequested=true;finalizingAnswer=true;clearAnswerTimers();try{recognition.stop()}catch(e){finishAnswerRound(answerRoundToken)}return}startListeningForAnswer(false)};
+$('review').onclick=()=>{const root=$('reviewList');root.innerHTML='';const weak=items.map((it,i)=>({it,i,r:results[i]})).filter(x=>x.r&&(x.r.correct===false || (x.r.correct===undefined&&x.r.ratio<.30)));if(!weak.length){root.textContent='Hozircha xato deb belgilangan savollar yo‘q.';return}weak.forEach(x=>{const d=document.createElement('div');d.className='qbox';const b=document.createElement('b');b.textContent=x.it.q;const p=document.createElement('p');p.textContent='Sizning javobingiz: '+x.r.user;const a=document.createElement('p');a.textContent='Namunaviy javob: '+(x.it.a||'Kiritilmagan');d.append(b,p,a);root.appendChild(d)})};
+
+// Savol-javoblar sahifa ochilishi bilan avtomatik tayyor turadi.
+items=embeddedBank.map(x=>({q:x.q,a:x.a}));
+$('fileStatus').textContent='PDFdagi 240 ta savol-javob dastur ichiga kiritilgan. Faylni qayta yuklash shart emas.';
+$('parseStatus').textContent='Tayyor: 100 ta buxgalteriya + 100 ta soliq qonunchiligi + 40 ta PF–100-son Farmon savoli.';
+renderStats();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+}
+</script>
+</body></html>

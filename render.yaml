@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: jarvis-suhbat-ustozi
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /health
+    envVars:
+      - key: JARVIS_ACCESS_TOKEN
+        generateValue: true
