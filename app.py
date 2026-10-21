@@ -24,6 +24,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "").strip()
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini").strip() or "gpt-4.1-mini"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash").strip() or "gemini-3.8-flash"
+GEMINI_TRANSCRIBE_MODEL = os.environ.get("GEMINI_TRANSCRIBE_MODEL", "gemini-3.5-transcribe").strip() or "gemini-3.5-transcribe"
 
 def evaluate_with_openai(question: str, user_answer: str, reference_answer: str) -> dict | None:
     """Optional semantic answer assessment. Returns None when AI is not configured or fails."""
@@ -317,7 +318,7 @@ def transcribe_with_gemini(audio_base64: str, mime_type: str) -> tuple[str | Non
         ]}],
         "generationConfig": {"temperature": 0, "maxOutputTokens": 260},
     }
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_TRANSCRIBE_MODEL}:generateContent"
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), headers={
         "x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"
     }, method="POST")
